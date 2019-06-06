@@ -1,0 +1,398 @@
+{
+    "SchemeID": "Scheme-f6f0a190",
+    "Name": "Livelihood",
+    "Version": "0.0.0.1",
+    "Codes": [
+        {
+            "CodeID": "code-9db83bb3",
+            "CodeType": "Normal",
+            "DisplayText": "farmer",
+            "NumericValue": 0,
+            "StringValue": "farmer",
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "farmer"
+            ]
+        },
+        {
+            "CodeID": "code-4236e17a",
+            "CodeType": "Normal",
+            "DisplayText": "business",
+            "NumericValue": 1,
+            "StringValue": "business",
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "business"
+            ]
+        },
+        {
+            "CodeID": "code-7e1dd056",
+            "CodeType": "Normal",
+            "DisplayText": "domestic worker",
+            "NumericValue": 2,
+            "StringValue": "domestic_worker",
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "domestic worker"
+            ]
+        },
+        {
+            "CodeID": "code-89d770f8",
+            "CodeType": "Normal",
+            "DisplayText": "teacher",
+            "NumericValue": 3,
+            "StringValue": "teacher",
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "teacher"
+            ]
+        },
+        {
+            "CodeID": "code-1d22b51a",
+            "CodeType": "Normal",
+            "DisplayText": "clergy",
+            "NumericValue": 4,
+            "StringValue": "clergy",
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "clergy"
+            ]
+        },
+        {
+            "CodeID": "code-c661bf58",
+            "CodeType": "Normal",
+            "DisplayText": "unemployed",
+            "NumericValue": 5,
+            "StringValue": "unemployed",
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "unemployed"
+            ]
+        },
+        {
+            "CodeID": "code-96d187fb",
+            "CodeType": "Normal",
+            "DisplayText": "casual work",
+            "StringValue": "casual_work",
+            "NumericValue": 6,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "casual worker"
+            ]
+        },
+        {
+            "CodeID": "code-513cf2d3",
+            "CodeType": "Normal",
+            "DisplayText": "waiter",
+            "StringValue": "waiter",
+            "NumericValue": 7,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "waiter"
+            ]
+        },
+        {
+            "CodeID": "code-5da9553d",
+            "CodeType": "Normal",
+            "DisplayText": "boda boda",
+            "StringValue": "boda_boda",
+            "NumericValue": 8,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "boda boda"
+            ]
+        },
+        {
+            "CodeID": "code-cfd070c9",
+            "CodeType": "Normal",
+            "DisplayText": "house wife",
+            "StringValue": "house_wife",
+            "NumericValue": 9,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "house wife"
+            ]
+        },
+        {
+            "CodeID": "code-9859e904",
+            "CodeType": "Normal",
+            "DisplayText": "student",
+            "StringValue": "student",
+            "NumericValue": 10,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "student"
+            ]
+        },
+        {
+            "CodeID": "code-cf1017cf",
+            "CodeType": "Normal",
+            "DisplayText": "civil servant",
+            "StringValue": "civil_servant",
+            "NumericValue": 11,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "civil servant"
+            ]
+        },
+        {
+            "CodeID": "code-de809f12",
+            "CodeType": "Normal",
+            "DisplayText": "counselor",
+            "StringValue": "counselor",
+            "NumericValue": 12,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "counselor"
+            ]
+        },
+        {
+            "CodeID": "code-e9897602",
+            "CodeType": "Normal",
+            "DisplayText": "music producer",
+            "StringValue": "music_producer",
+            "NumericValue": 13,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "music producer"
+            ]
+        },
+        {
+            "CodeID": "code-ae035d6d",
+            "CodeType": "Normal",
+            "DisplayText": "construction",
+            "StringValue": "construction",
+            "NumericValue": 14,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "construction"
+            ]
+        },
+        {
+            "CodeID": "code-d9179b3c",
+            "CodeType": "Normal",
+            "DisplayText": "tailor",
+            "StringValue": "tailor",
+            "NumericValue": 15,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "tailor"
+            ]
+        },
+        {
+            "CodeID": "code-a22e7bbb",
+            "CodeType": "Normal",
+            "DisplayText": "driver",
+            "StringValue": "driver",
+            "NumericValue": 16,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "driver"
+            ]
+        },
+        {
+            "CodeID": "code-baf63463",
+            "CodeType": "Normal",
+            "DisplayText": "mechanic",
+            "StringValue": "mechanic",
+            "NumericValue": 17,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "mechanic"
+            ]
+        },
+        {
+            "CodeID": "code-4b3e2ac3",
+            "CodeType": "Normal",
+            "DisplayText": "technician",
+            "StringValue": "technician",
+            "NumericValue": 18,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "technician"
+            ]
+        },
+        {
+            "CodeID": "code-bba18401",
+            "CodeType": "Normal",
+            "DisplayText": "fisherman",
+            "StringValue": "fisherman",
+            "NumericValue": 19,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "fisherman"
+            ]
+        },
+        {
+            "CodeID": "code-b8797d86",
+            "CodeType": "Normal",
+            "DisplayText": "security guard",
+            "StringValue": "security_guard",
+            "NumericValue": 20,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "security guard"
+            ]
+        },
+        {
+            "CodeID": "code-943307f7",
+            "CodeType": "Normal",
+            "DisplayText": "doctor",
+            "StringValue": "doctor",
+            "NumericValue": 21,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "doctor"
+            ]
+        },
+        {
+            "CodeID": "code-634c77dd",
+            "CodeType": "Normal",
+            "DisplayText": "journalist",
+            "StringValue": "journalist",
+            "NumericValue": 22,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "journalist"
+            ]
+        },
+        {
+            "CodeID": "code-3261983a",
+            "CodeType": "Normal",
+            "DisplayText": "prison warder",
+            "StringValue": "prison_warder",
+            "NumericValue": 23,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "prison warder"
+            ]
+        },
+        {
+            "CodeID": "code-b9c1a5da",
+            "CodeType": "Normal",
+            "DisplayText": "surveyor",
+            "StringValue": "surveyor",
+            "NumericValue": 24,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "surveyor"
+            ]
+        },
+        {
+            "CodeID": "code-c6cbfc72",
+            "CodeType": "Normal",
+            "DisplayText": "chef",
+            "StringValue": "chef",
+            "NumericValue": 25,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "chef"
+            ]
+        },
+        {
+            "CodeID": "code-7a199947",
+            "CodeType": "Normal",
+            "DisplayText": "librarian",
+            "StringValue": "librarian",
+            "NumericValue": 26,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "librarian"
+            ]
+        },
+        {
+            "CodeID": "code-f9adedb9",
+            "CodeType": "Normal",
+            "DisplayText": "cosmetology",
+            "StringValue": "cosmetology",
+            "NumericValue": 27,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "cosmetology"
+            ]
+        },
+        {
+            "CodeID": "code-72a32e95",
+            "CodeType": "Normal",
+            "DisplayText": "other",
+            "StringValue": "other",
+            "NumericValue": 28,
+            "VisibleInCoda": true,
+            "MatchValues": [
+                "other"
+            ]
+        },
+        {
+            "CodeID": "code-NA-f93d3eb7",
+            "CodeType": "Control",
+            "ControlCode": "NA",
+            "DisplayText": "NA (missing)",
+            "NumericValue": -10,
+            "StringValue": "NA",
+            "VisibleInCoda": false
+        },
+        {
+            "CodeID": "code-NS-2c11b7c9",
+            "CodeType": "Control",
+            "ControlCode": "NS",
+            "DisplayText": "NS (skip)",
+            "NumericValue": -20,
+            "StringValue": "NS",
+            "VisibleInCoda": false
+        },
+        {
+            "CodeID": "code-NC-42f1d983",
+            "CodeType": "Control",
+            "ControlCode": "NC",
+            "DisplayText": "NC (not coded)",
+            "NumericValue": -30,
+            "StringValue": "NC",
+            "VisibleInCoda": true
+        },
+        {
+            "CodeID": "code-NR-5e3eee23",
+            "CodeType": "Control",
+            "ControlCode": "NR",
+            "DisplayText": "NR (not reviewed)",
+            "NumericValue": -40,
+            "StringValue": "NR",
+            "VisibleInCoda": false
+        },
+        {
+            "CodeID": "code-NIC-99631cb8",
+            "CodeType": "Control",
+            "ControlCode": "NIC",
+            "DisplayText": "NIC (not internally consistent)",
+            "NumericValue": -50,
+            "StringValue": "NIC",
+            "VisibleInCoda": false
+        },
+        {
+            "StringValue": "Noise_Other_Project",
+            "ControlCode": "NOP",
+            "DisplayText": "Noise (Other Project)",
+            "VisibleInCoda": true,
+            "NumericValue": -60,
+            "CodeID": "code-NOP-4eb70633",
+            "CodeType": "Control"
+        },
+        {
+            "CodeID": "code-STOP-08b832a8",
+            "CodeType": "Control",
+            "ControlCode": "STOP",
+            "DisplayText": "STOP",
+            "NumericValue": -90,
+            "StringValue": "STOP",
+            "VisibleInCoda": true
+        },
+        {
+            "CodeID": "code-WS-adb25603b7af",
+            "CodeType": "Control",
+            "ControlCode": "WS",
+            "DisplayText": "WS (wrong scheme)",
+            "NumericValue": -100,
+            "StringValue": "WS",
+            "VisibleInCoda": true
+        }
+    ]
+}
