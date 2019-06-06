@@ -11,7 +11,8 @@
     "ahadi_demog"
   ],
   "RapidProTestContactUUIDs": [
-
+    "9ade6864-6065-4548-9441-bbce41215f42",
+    "2afc675d-97d5-428d-a563-258e7a5515f3"
   ],
   "PhoneNumberUuidTable": {
     "FirebaseCredentialsFileURL": "gs://avf-credentials/avf-id-infrastructure-firebase-adminsdk-6xps8-b9173f2bfd.json",
@@ -46,7 +47,7 @@
   ],
   "ProjectStartDate": "2000-01-01T00:00:00+03:00",
   "ProjectEndDate": "2100-01-01T24:00:00+03:00",
-  "FilterTestMessages": false,
+  "FilterTestMessages": true,
   "DriveUpload": {
     "DriveCredentialsFileURL": "gs://avf-credentials/pipeline-runner-service-acct-avf-data-core-64cc71459fe7.json",
     "ProductionUploadPath": "ahadi_analysis_outputs/ahadi_s01_production.csv",
