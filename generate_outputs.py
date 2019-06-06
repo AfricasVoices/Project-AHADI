@@ -10,7 +10,8 @@ from storage.google_cloud import google_cloud_utils
 from storage.google_drive import drive_client_wrapper
 
 from src import AutoCodeShowMessages, AutoCodeSurveys, CombineRawDatasets, \
-    ProductionFile, TranslateRapidProKeys
+    ProductionFile, TranslateRapidProKeys, AnalysisFile
+from src.apply_manual_codes import ApplyManualCodes
 from src.lib import PipelineConfiguration
 
 Logger.set_project_name("AHADI")
@@ -120,12 +121,11 @@ if __name__ == "__main__":
     log.info("Auto Coding Surveys...")
     data = AutoCodeSurveys.auto_code_surveys(user, data, coded_dir_path)
 
-    # TODO: Generate analysis CSVs
-    # log.info("Applying Manual Codes from Coda...")
-    # data = ApplyManualCodes.apply_manual_codes(user, data, prev_coded_dir_path)
+    log.info("Applying Manual Codes from Coda...")
+    data = ApplyManualCodes.apply_manual_codes(user, data, prev_coded_dir_path)
 
-    # log.info("Generating Analysis CSVs...")
-    # data = AnalysisFile.generate(user, data, csv_by_message_output_path, csv_by_individual_output_path)
+    log.info("Generating Analysis CSVs...")
+    data = AnalysisFile.generate(user, data, csv_by_message_output_path, csv_by_individual_output_path)
 
     log.info("Writing TracedData to file...")
     IOUtils.ensure_dirs_exist_for_file(json_output_path)
