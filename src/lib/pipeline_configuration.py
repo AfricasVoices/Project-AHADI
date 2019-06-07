@@ -1,7 +1,7 @@
 import json
 from urllib.parse import urlparse
 
-from core_data_modules.cleaners import Codes
+from core_data_modules.cleaners import Codes, swahili
 from core_data_modules.data_models import Scheme, validators
 from dateutil.parser import isoparse
 
@@ -20,6 +20,7 @@ class CodeSchemes(object):
 
     GENDER = _open_scheme("gender.json")
     AGE = _open_scheme("age.json")
+    LIVELIHOOD = _open_scheme("livelihood.json")
 
     # WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
 
@@ -95,6 +96,7 @@ class PipelineConfiguration(object):
                    time_field="gender_time",
                    coda_filename="gender.json",
                    analysis_file_key="gender",
+                   cleaner=swahili.DemographicCleaner.clean_gender,
                    code_scheme=CodeSchemes.GENDER),
 
         CodingPlan(raw_field="age_raw",
@@ -102,7 +104,15 @@ class PipelineConfiguration(object):
                    time_field="age_time",
                    coda_filename="age.json",
                    analysis_file_key="age",
-                   code_scheme=CodeSchemes.AGE)
+                   cleaner=swahili.DemographicCleaner.clean_age,
+                   code_scheme=CodeSchemes.AGE),
+
+        CodingPlan(raw_field="livelihood_raw",
+                   coded_field="livelihood_coded",
+                   time_field="livelihood_time",
+                   coda_filename="livelihood.json",
+                   analysis_file_key="livelihood",
+                   code_scheme=CodeSchemes.LIVELIHOOD)
     ])
 
     def __init__(self, rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,
