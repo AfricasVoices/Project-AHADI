@@ -36,8 +36,8 @@
     {"RapidProKey": "Rqa_S01_E03 (Time) - ahadi_s01_e03_activation", "PipelineKey": "sent_on"},
     {"RapidProKey": "Rqa_S01_E04 (Time) - ahadi_s01_e04_activation", "PipelineKey": "sent_on"},
 
-    {"RapidProKey": "Constituency (Value) - ahadi_demog", "PipelineKey": "constituency_raw"},
-    {"RapidProKey": "Constituency (Time) - ahadi_demog", "PipelineKey": "constituency_time"},
+    {"RapidProKey": "Constituency (Value) - ahadi_demog", "PipelineKey": "location_raw"},
+    {"RapidProKey": "Constituency (Time) - ahadi_demog", "PipelineKey": "location_time"},
     {"RapidProKey": "Gender (Value) - ahadi_demog", "PipelineKey": "gender_raw"},
     {"RapidProKey": "Gender (Time) - ahadi_demog", "PipelineKey": "gender_time"},
     {"RapidProKey": "Age (Value) - ahadi_demog", "PipelineKey": "age_raw"},

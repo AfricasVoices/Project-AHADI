@@ -18,6 +18,8 @@ class CodeSchemes(object):
     S01E03_REASONS = _open_scheme("s01e03_reasons.json")
     S01E04_REASONS = _open_scheme("s01e04_reasons.json")
 
+    CONSTITUENCY = _open_scheme("constituency.json")
+    COUNTY = _open_scheme("county.json")
     GENDER = _open_scheme("gender.json")
     AGE = _open_scheme("age.json")
     LIVELIHOOD = _open_scheme("livelihood.json")
@@ -86,7 +88,34 @@ class PipelineConfiguration(object):
                    code_scheme=CodeSchemes.S01E04_REASONS),
     ]
 
-    LOCATION_CODING_PLANS = []
+    @staticmethod
+    def clean_age_with_range_filter(text):
+        """
+        Cleans age from the given `text`, setting to NC if the cleaned age is not in the range 10 <= age < 100.
+        """
+        age = swahili.DemographicCleaner.clean_age(text)
+        if type(age) == int and 10 <= age < 100:
+            return str(age)
+            # TODO: Once the cleaners are updated to not return Codes.NOT_CODED, this should be updated to still return
+            #       NC in the case where age is an int but is out of range
+        else:
+            return Codes.NOT_CODED
+
+    LOCATION_CODING_PLANS = [
+        CodingPlan(raw_field="location_raw",
+                   coded_field="constituency_coded",
+                   time_field="constituency_time",
+                   coda_filename="location.json",
+                   analysis_file_key="constituency",
+                   code_scheme=CodeSchemes.CONSTITUENCY),
+
+        CodingPlan(raw_field="location_raw",
+                   coded_field="county_coded",
+                   time_field="county_time",
+                   coda_filename="county.json",
+                   analysis_file_key="county",
+                   code_scheme=CodeSchemes.COUNTY)
+    ]
 
     SURVEY_CODING_PLANS = []
     SURVEY_CODING_PLANS.extend(LOCATION_CODING_PLANS)
@@ -104,7 +133,7 @@ class PipelineConfiguration(object):
                    time_field="age_time",
                    coda_filename="age.json",
                    analysis_file_key="age",
-                   cleaner=swahili.DemographicCleaner.clean_age,
+                   cleaner=lambda text: PipelineConfiguration.clean_age_with_range_filter(text),
                    code_scheme=CodeSchemes.AGE),
 
         CodingPlan(raw_field="livelihood_raw",
