@@ -21,8 +21,10 @@ DATASETS=(
     "s01e03"
     "s01e04"
 
+    "location"
     "gender"
     "age"
+    "livelihood"
 )
 
 cd "$CODA_V2_ROOT/data_tools"
