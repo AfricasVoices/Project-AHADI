@@ -1,0 +1,113 @@
+{
+  "SchemeID": "Scheme-fffff160",
+  "Name": "WS - Correct Dataset",
+  "Version": "0.0.0.1",
+  "Codes": [
+    {
+      "CodeID": "code-fb954197",
+      "CodeType": "Normal",
+      "DisplayText": "location",
+      "StringValue": "location",
+      "NumericValue": 1,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "location"
+      ]
+    },
+    {
+      "CodeID": "code-f936e3ec",
+      "CodeType": "Normal",
+      "DisplayText": "gender",
+      "StringValue": "gender",
+      "NumericValue": 2,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "gender"
+      ]
+    },
+    {
+      "CodeID": "code-8f96851a",
+      "CodeType": "Normal",
+      "DisplayText": "age",
+      "StringValue": "age",
+      "NumericValue": 3,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "age"
+      ]
+    },
+    {
+      "CodeID": "code-6880f7a1",
+      "CodeType": "Normal",
+      "DisplayText": "livelihood",
+      "StringValue": "livelihood",
+      "NumericValue": 4,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "livelihood"
+      ]
+    },
+    {
+      "CodeID": "code-4e5d2e7e",
+      "CodeType": "Normal",
+      "DisplayText": "s01e01",
+      "StringValue": "s01e01",
+      "NumericValue": 5,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "s01e01"
+      ]
+    },
+    {
+      "CodeID": "code-e5b51b6d",
+      "CodeType": "Normal",
+      "DisplayText": "s01e02",
+      "StringValue": "s01e02",
+      "NumericValue": 6,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "s01e02"
+      ]
+    },
+    {
+      "CodeID": "code-5cd4ec57",
+      "CodeType": "Normal",
+      "DisplayText": "s01e03",
+      "StringValue": "s01e03",
+      "NumericValue": 7,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "s01e03"
+      ]
+    },
+    {
+      "CodeID": "code-5e05ae75",
+      "CodeType": "Normal",
+      "DisplayText": "s01e04",
+      "StringValue": "s01e04",
+      "NumericValue": 8,
+      "VisibleInCoda": true,
+      "MatchValues": [
+        "s01e04"
+      ]
+    },
+    {
+      "CodeID": "code-NR-5e3eee23",
+      "CodeType": "Control",
+      "ControlCode": "NR",
+      "DisplayText": "NR (not reviewed)",
+      "NumericValue": -40,
+      "StringValue": "NR",
+      "VisibleInCoda": false
+    },
+    {
+      "CodeID": "code-CE-016c1e22",
+      "CodeType": "Control",
+      "ControlCode": "CE",
+      "DisplayText": "CE (coding error)",
+      "NumericValue": -110,
+      "StringValue": "CE",
+      "VisibleInCoda": false
+    }
+  ]
+}
