@@ -44,7 +44,7 @@
             "StringValue": "homa_bay",
             "VisibleInCoda": true,
             "MatchValues": [
-                "homa bay"
+                "homa_bay"
             ]
         },
         {
@@ -110,7 +110,7 @@
             "StringValue": "elgeyo_marakwet",
             "VisibleInCoda": true,
             "MatchValues": [
-                "elgeyo marakwet"
+                "elgeyo_marakwet"
             ]
         },
         {
@@ -341,7 +341,7 @@
             "StringValue": "muranga",
             "VisibleInCoda": true,
             "MatchValues": [
-                "murang'a"
+                "muranga"
             ]
         },
         {
@@ -440,7 +440,7 @@
             "StringValue": "tana_river",
             "VisibleInCoda": true,
             "MatchValues": [
-                "tana river"
+                "tana_river"
             ]
         },
         {
@@ -462,7 +462,7 @@
             "StringValue": "trans_nzoia",
             "VisibleInCoda": true,
             "MatchValues": [
-                "trans nzoia"
+                "trans_nzoia"
             ]
         },
         {
@@ -484,7 +484,7 @@
             "StringValue": "uasin_gishu",
             "VisibleInCoda": true,
             "MatchValues": [
-                "uasin gishu"
+                "uasin_gishu"
             ]
         },
         {
@@ -517,7 +517,7 @@
             "StringValue": "west_pokot",
             "VisibleInCoda": true,
             "MatchValues": [
-                "west pokot"
+                "west_pokot"
             ]
         },
         {
