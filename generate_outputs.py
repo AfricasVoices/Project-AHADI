@@ -75,17 +75,6 @@ if __name__ == "__main__":
     with open(pipeline_configuration_file_path) as f:
         pipeline_configuration = PipelineConfiguration.from_configuration_file(f)
 
-    log.info("Downloading Firestore Uuid Table credentials...")
-    firestore_uuid_table_credentials = json.loads(google_cloud_utils.download_blob_to_string(
-        google_cloud_credentials_file_path,
-        pipeline_configuration.phone_number_uuid_table.firebase_credentials_file_url
-    ))
-    phone_number_uuid_table = FirestoreUuidTable(
-        pipeline_configuration.phone_number_uuid_table.table_name,
-        firestore_uuid_table_credentials,
-        "avf-phone-uuid-"
-    )
-
     if pipeline_configuration.drive_upload is not None:
         log.info(f"Downloading Google Drive service account credentials...")
         credentials_info = json.loads(google_cloud_utils.download_blob_to_string(
@@ -129,7 +118,7 @@ if __name__ == "__main__":
     data = ProductionFile.generate(data, production_csv_output_path)
 
     log.info("Auto Coding Surveys...")
-    data = AutoCodeSurveys.auto_code_surveys(user, data, phone_number_uuid_table, coded_dir_path)
+    data = AutoCodeSurveys.auto_code_surveys(user, data, coded_dir_path)
 
     # TODO: Generate analysis CSVs
     # log.info("Applying Manual Codes from Coda...")

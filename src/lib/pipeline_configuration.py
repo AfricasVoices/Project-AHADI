@@ -104,15 +104,15 @@ class PipelineConfiguration(object):
     LOCATION_CODING_PLANS = [
         CodingPlan(raw_field="location_raw",
                    coded_field="constituency_coded",
-                   time_field="constituency_time",
+                   time_field="location_time",
                    coda_filename="location.json",
                    analysis_file_key="constituency",
                    code_scheme=CodeSchemes.CONSTITUENCY),
 
         CodingPlan(raw_field="location_raw",
                    coded_field="county_coded",
-                   time_field="county_time",
-                   coda_filename="county.json",
+                   time_field="location_time",
+                   coda_filename="location.json",
                    analysis_file_key="county",
                    code_scheme=CodeSchemes.COUNTY)
     ]
