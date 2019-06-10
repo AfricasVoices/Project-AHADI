@@ -345,15 +345,6 @@
             ]
         },
         {
-            "CodeID": "code-NA-f93d3eb7",
-            "DisplayText": "na (missing)",
-            "CodeType": "Control",
-            "NumericValue": -10,
-            "StringValue": "NA",
-            "VisibleInCoda": false,
-            "ControlCode": "NA"
-        },
-        {
             "CodeID": "code-ccf96206",
             "DisplayText": "nakuru",
             "CodeType": "Normal",
@@ -385,51 +376,6 @@
             "MatchValues": [
                 "narok"
             ]
-        },
-        {
-            "CodeID": "code-NC-42f1d983",
-            "DisplayText": "nc (not coded)",
-            "CodeType": "Control",
-            "NumericValue": -30,
-            "StringValue": "NC",
-            "VisibleInCoda": true,
-            "ControlCode": "NC"
-        },
-        {
-            "CodeID": "code-NIC-99631cb8",
-            "DisplayText": "nic (not internally consistent)",
-            "CodeType": "Control",
-            "NumericValue": -50,
-            "StringValue": "NIC",
-            "VisibleInCoda": false,
-            "ControlCode": "NIC"
-        },
-        {
-            "CodeID": "code-NOP-4eb70633",
-            "DisplayText": "noise (other project)",
-            "CodeType": "Control",
-            "NumericValue": -60,
-            "StringValue": "Noise_Other_Project",
-            "VisibleInCoda": true,
-            "ControlCode": "NOP"
-        },
-        {
-            "CodeID": "code-NR-5e3eee23",
-            "DisplayText": "nr (not reviewed)",
-            "CodeType": "Control",
-            "NumericValue": -40,
-            "StringValue": "NR",
-            "VisibleInCoda": false,
-            "ControlCode": "NR"
-        },
-        {
-            "CodeID": "code-NS-2c11b7c9",
-            "DisplayText": "ns (skip)",
-            "CodeType": "Control",
-            "NumericValue": -20,
-            "StringValue": "NS",
-            "VisibleInCoda": false,
-            "ControlCode": "NS"
         },
         {
             "CodeID": "code-ee9b024d",
@@ -474,15 +420,6 @@
             "MatchValues": [
                 "samburu"
             ]
-        },
-        {
-            "CodeID": "code-STOP-08b832a8",
-            "DisplayText": "stop",
-            "CodeType": "Control",
-            "NumericValue": -90,
-            "StringValue": "STOP",
-            "VisibleInCoda": true,
-            "ControlCode": "STOP"
         },
         {
             "CodeID": "code-a05e615d",
@@ -584,13 +521,76 @@
             ]
         },
         {
+            "CodeID": "code-NA-f93d3eb7",
+            "DisplayText": "NA (missing)",
+            "CodeType": "Control",
+            "NumericValue": -10,
+            "StringValue": "NA",
+            "VisibleInCoda": false,
+            "ControlCode": "NA"
+        },
+        {
+            "CodeID": "code-NS-2c11b7c9",
+            "DisplayText": "NS (skip)",
+            "CodeType": "Control",
+            "NumericValue": -20,
+            "StringValue": "NS",
+            "VisibleInCoda": false,
+            "ControlCode": "NS"
+        },
+        {
+            "CodeID": "code-NC-42f1d983",
+            "DisplayText": "NC (not coded)",
+            "CodeType": "Control",
+            "NumericValue": -30,
+            "StringValue": "NC",
+            "VisibleInCoda": true,
+            "ControlCode": "NC"
+        },
+        {
+            "CodeID": "code-NR-5e3eee23",
+            "DisplayText": "NR (not reviewed)",
+            "CodeType": "Control",
+            "NumericValue": -40,
+            "StringValue": "NR",
+            "VisibleInCoda": false,
+            "ControlCode": "NR"
+        },
+        {
+            "CodeID": "code-NIC-99631cb8",
+            "DisplayText": "NIC (not internally consistent)",
+            "CodeType": "Control",
+            "NumericValue": -50,
+            "StringValue": "NIC",
+            "VisibleInCoda": false,
+            "ControlCode": "NIC"
+        },
+        {
+            "CodeID": "code-STOP-08b832a8",
+            "DisplayText": "STOP",
+            "CodeType": "Control",
+            "NumericValue": -90,
+            "StringValue": "STOP",
+            "VisibleInCoda": true,
+            "ControlCode": "STOP"
+        },
+        {
             "CodeID": "code-WS-adb25603b7af",
-            "DisplayText": "ws (wrong scheme)",
+            "DisplayText": "WS (wrong scheme)",
             "CodeType": "Control",
             "NumericValue": -100,
             "StringValue": "WS",
             "VisibleInCoda": true,
             "ControlCode": "WS"
+        },
+        {
+            "CodeID": "code-CE-016c1e22",
+            "CodeType": "Control",
+            "ControlCode": "CE",
+            "DisplayText": "CE (coding error)",
+            "NumericValue": -110,
+            "StringValue": "CE",
+            "VisibleInCoda": false
         }
     ]
 }
