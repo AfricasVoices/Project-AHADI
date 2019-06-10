@@ -3283,15 +3283,6 @@
             "ControlCode": "NIC"
         },
         {
-            "CodeID": "code-NOP-4eb70633",
-            "DisplayText": "Noise (Other Project)",
-            "CodeType": "Control",
-            "NumericValue": -60,
-            "StringValue": "Noise_Other_Project",
-            "VisibleInCoda": true,
-            "ControlCode": "NOP"
-        },
-        {
             "CodeID": "code-STOP-08b832a8",
             "DisplayText": "STOP",
             "CodeType": "Control",
