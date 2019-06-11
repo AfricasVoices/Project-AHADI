@@ -3,7 +3,7 @@ from os import path
 
 from core_data_modules.cleaners import Codes
 from core_data_modules.cleaners.cleaning_utils import CleaningUtils
-from core_data_modules.cleaners.location_tools import SomaliaLocations
+from core_data_modules.cleaners.location_tools import KenyaLocations
 from core_data_modules.traced_data import Metadata
 from core_data_modules.traced_data.io import TracedDataCodaV2IO
 from core_data_modules.util import TimeUtils
@@ -19,7 +19,7 @@ class ApplyManualCodes(object):
             return scheme.get_code_with_control_code(Codes.NOT_CODED)
         else:
             return scheme.get_code_with_match_value(clean_value)
-        
+
     @classmethod
     def _impute_location_codes(cls, user, data):
         for td in data:
@@ -31,16 +31,16 @@ class ApplyManualCodes(object):
             for plan in PipelineConfiguration.LOCATION_CODING_PLANS:
                 coda_code = plan.code_scheme.get_code_with_id(td[plan.coded_field]["CodeID"])
                 if location_code is not None:
-                    if not (coda_code.code_id == location_code.code_id or coda_code.control_code == Codes.NOT_REVIEWED):
-                        location_code = CodeSchemes.MOGADISHU_SUB_DISTRICT.get_code_with_control_code(
-                            Codes.NOT_INTERNALLY_CONSISTENT)
+                    if not (
+                            coda_code.code_id == location_code.code_id or coda_code.control_code == Codes.NOT_REVIEWED):
+                        location_code = CodeSchemes.CONSTITUENCY.get_code_with_control_code(Codes.CODING_ERROR)
                 elif coda_code.control_code != Codes.NOT_REVIEWED:
                     location_code = coda_code
 
             # If no code was found, then this location is still not reviewed.
             # Synthesise a NOT_REVIEWED code accordingly.
             if location_code is None:
-                location_code = CodeSchemes.MOGADISHU_SUB_DISTRICT.get_code_with_control_code(Codes.NOT_REVIEWED)
+                location_code = CodeSchemes.CONSTITUENCY.get_code_with_control_code(Codes.NOT_REVIEWED)
 
             # If a control code was found, set all other location keys to that control code,
             # otherwise convert the provided location to the other locations in the hierarchy.
@@ -55,43 +55,16 @@ class ApplyManualCodes(object):
                     }, Metadata(user, Metadata.get_call_location(), time.time()))
             else:
                 location = location_code.match_values[0]
-
                 td.append_data({
-                    "mogadishu_sub_district_coded": CleaningUtils.make_label_from_cleaner_code(
-                        CodeSchemes.MOGADISHU_SUB_DISTRICT,
-                        cls.make_location_code(CodeSchemes.MOGADISHU_SUB_DISTRICT,
-                                               SomaliaLocations.mogadishu_sub_district_for_location_code(location)),
+                    "county_coded": CleaningUtils.make_label_from_cleaner_code(
+                        CodeSchemes.COUNTY,
+                        cls.make_location_code(CodeSchemes.COUNTY,
+                                               KenyaLocations.county_for_location_code(location)),
                         Metadata.get_call_location()).to_dict(),
-                    "district_coded": CleaningUtils.make_label_from_cleaner_code(
-                        CodeSchemes.SOMALIA_DISTRICT,
-                        cls.make_location_code(CodeSchemes.SOMALIA_DISTRICT,
-                                               SomaliaLocations.district_for_location_code(location)),
-                        Metadata.get_call_location()).to_dict(),
-                    "region_coded": CleaningUtils.make_label_from_cleaner_code(
-                        CodeSchemes.SOMALIA_REGION,
-                        cls.make_location_code(CodeSchemes.SOMALIA_REGION,
-                                               SomaliaLocations.region_for_location_code(location)),
-                        Metadata.get_call_location()).to_dict(),
-                    "state_coded": CleaningUtils.make_label_from_cleaner_code(
-                        CodeSchemes.SOMALIA_STATE,
-                        cls.make_location_code(CodeSchemes.SOMALIA_STATE,
-                                               SomaliaLocations.state_for_location_code(location)),
-                        Metadata.get_call_location()).to_dict(),
-                    "zone_coded": CleaningUtils.make_label_from_cleaner_code(
-                        CodeSchemes.SOMALIA_ZONE,
-                        cls.make_location_code(CodeSchemes.SOMALIA_ZONE,
-                                               SomaliaLocations.zone_for_location_code(location)),
-                        Metadata.get_call_location()).to_dict()
-                }, Metadata(user, Metadata.get_call_location(), time.time()))
-
-            # If the location is not coded, set the zone from the operator
-            if location_code.control_code == Codes.NOT_CODED:
-                operator = CodeSchemes.SOMALIA_OPERATOR.get_code_with_id(td["operator_coded"]["CodeID"]).match_values[0]
-                td.append_data({
-                    "zone_coded": CleaningUtils.make_label_from_cleaner_code(
-                        CodeSchemes.SOMALIA_ZONE,
-                        cls.make_location_code(CodeSchemes.SOMALIA_ZONE,
-                                               SomaliaLocations.zone_for_operator_code(operator)),
+                    "constituency_coded": CleaningUtils.make_label_from_cleaner_code(
+                        CodeSchemes.CONSTITUENCY,
+                        cls.make_location_code(CodeSchemes.CONSTITUENCY,
+                                               KenyaLocations.constituency_for_location_code(location)),
                         Metadata.get_call_location()).to_dict()
                 }, Metadata(user, Metadata.get_call_location(), time.time()))
 
@@ -240,8 +213,7 @@ class ApplyManualCodes(object):
                     missing_dict[plan.coded_field] = nc_label.to_dict()
             td.append_data(missing_dict, Metadata(user, Metadata.get_call_location(), time.time()))
 
-        # Set district/region/state/zone codes from the coded district field.
-        # TODO: Handle Kenya locations
-        # cls._impute_location_codes(user, data)
+        # Set constituency/county codes from the coded district field.
+        cls._impute_location_codes(user, data)
 
         return data

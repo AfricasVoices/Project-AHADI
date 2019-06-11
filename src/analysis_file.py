@@ -8,7 +8,6 @@ from core_data_modules.traced_data.util import FoldTracedData
 from core_data_modules.util import TimeUtils
 
 from src.lib import PipelineConfiguration, AnalysisKeys
-from src.lib.pipeline_configuration import CodeSchemes
 
 
 class ConsentUtils(object):
@@ -110,14 +109,6 @@ class AnalysisFile(object):
                 Metadata(user, Metadata.get_call_location(), time.time())
             )
 
-        # Convert the operator code to its string value
-        # TODO: Handle Kenya operators
-        # for td in data:
-        #     td.append_data(
-        #         {"operator": CodeSchemes.SOMALIA_OPERATOR.get_code_with_id(td["operator_coded"]["CodeID"]).string_value},
-        #         Metadata(user, Metadata.get_call_location(), time.time())
-        #     )
-
         # Convert RQA binary codes to their string values
         for td in data:
             td.append_data(
@@ -144,7 +135,7 @@ class AnalysisFile(object):
                        for plan in PipelineConfiguration.RQA_CODING_PLANS
                        if plan.binary_analysis_file_key is not None]
 
-        equal_keys = ["uid", "operator"]
+        equal_keys = ["uid"]
         equal_keys.extend(survey_keys)
         concat_keys = [plan.raw_field for plan in PipelineConfiguration.RQA_CODING_PLANS]
         bool_keys = [
@@ -163,7 +154,7 @@ class AnalysisFile(object):
         ]
 
         # Export to CSV
-        export_keys = ["uid", "operator"]
+        export_keys = ["uid"]
         export_keys.extend(bool_keys)
         export_keys.extend(matrix_keys)
         export_keys.extend(binary_keys)
