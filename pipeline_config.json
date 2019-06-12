@@ -1,0 +1,34 @@
+{
+  "RapidProDomain": "textit.in",
+  "RapidProTokenFileURL": "gs://avf-credentials/gap-ahadi-text-it-token.txt",
+  "ActivationFlowNames": [
+    "ahadi_s01_e01_activation",
+    "ahadi_s01_e02_activation",
+    "ahadi_s01_e03_activation",
+    "ahadi_s01_e04_activation"
+  ],
+  "SurveyFlowNames": [
+    "ahadi_demog"
+  ],
+  "RapidProTestContactUUIDs": [
+
+  ],
+  "PhoneNumberUuidTable": {
+    "FirebaseCredentialsFileURL": "gs://avf-credentials/avf-id-infrastructure-firebase-adminsdk-6xps8-b9173f2bfd.json",
+    "TableName": "AHADI_phone_number_avf_phone_id"
+  },
+  "RapidProKeyRemappings": [
+
+  ],
+  "ProjectStartDate": "2000-01-01T00:00:00+03:00",
+  "ProjectEndDate": "2100-01-01T24:00:00+03:00",
+  "FilterTestMessages": false,
+  "DriveUpload": {
+    "DriveCredentialsFileURL": "gs://avf-credentials/pipeline-runner-service-acct-avf-data-core-64cc71459fe7.json",
+    "ProductionUploadPath": "ahadi_analysis_outputs/csap_s02_production.csv",
+    "MessagesUploadPath": "ahadi_analysis_outputs/csap_s02_messages.csv",
+    "IndividualsUploadPath": "ahadi_analysis_outputs/csap_s02_individuals.csv",
+    "TracedDataUploadPath": "ahadi_analysis_outputs/csap_s02_traced_data.json"
+  },
+  "FlowDefinitionsUploadURLPrefix": "gs://avf-flow-definitions-test/AHADI-test-"
+}
