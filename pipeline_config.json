@@ -45,8 +45,8 @@
     {"RapidProKey": "Livelihood (Value) - ahadi_demog", "PipelineKey": "livelihood_raw"},
     {"RapidProKey": "Livelihood (Time) - ahadi_demog", "PipelineKey": "livelihood_time"}
   ],
-  "ProjectStartDate": "2019-06-10T00:00:00+03:00",
-  "ProjectEndDate": "2019-07-06T24:00:00+03:00",
+  "ProjectStartDate": "2019-06-17T00:00:00+03:00",
+  "ProjectEndDate": "2019-07-13T24:00:00+03:00",
   "FilterTestMessages": true,
   "DriveUpload": {
     "DriveCredentialsFileURL": "gs://avf-credentials/pipeline-runner-service-acct-avf-data-core-64cc71459fe7.json",
