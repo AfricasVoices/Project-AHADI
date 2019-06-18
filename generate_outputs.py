@@ -5,12 +5,12 @@ import os
 from core_data_modules.logging import Logger
 from core_data_modules.traced_data.io import TracedDataJsonIO
 from core_data_modules.util import IOUtils
-from id_infrastructure.firestore_uuid_table import FirestoreUuidTable
 from storage.google_cloud import google_cloud_utils
 from storage.google_drive import drive_client_wrapper
 
 from src import AutoCodeShowMessages, AutoCodeSurveys, CombineRawDatasets, \
-    ProductionFile, TranslateRapidProKeys
+    ProductionFile, TranslateRapidProKeys, AnalysisFile
+from src.apply_manual_codes import ApplyManualCodes
 from src.lib import PipelineConfiguration
 
 Logger.set_project_name("AHADI")
@@ -120,12 +120,11 @@ if __name__ == "__main__":
     log.info("Auto Coding Surveys...")
     data = AutoCodeSurveys.auto_code_surveys(user, data, coded_dir_path)
 
-    # TODO: Generate analysis CSVs
-    # log.info("Applying Manual Codes from Coda...")
-    # data = ApplyManualCodes.apply_manual_codes(user, data, prev_coded_dir_path)
+    log.info("Applying Manual Codes from Coda...")
+    data = ApplyManualCodes.apply_manual_codes(user, data, prev_coded_dir_path)
 
-    # log.info("Generating Analysis CSVs...")
-    # data = AnalysisFile.generate(user, data, csv_by_message_output_path, csv_by_individual_output_path)
+    log.info("Generating Analysis CSVs...")
+    data = AnalysisFile.generate(user, data, csv_by_message_output_path, csv_by_individual_output_path)
 
     log.info("Writing TracedData to file...")
     IOUtils.ensure_dirs_exist_for_file(json_output_path)
@@ -145,18 +144,17 @@ if __name__ == "__main__":
                                               target_file_name=production_csv_drive_file_name,
                                               target_folder_is_shared_with_me=True)
 
-        # TODO: Upload analysis CSVs
-        # messages_csv_drive_dir = os.path.dirname(pipeline_configuration.drive_upload.messages_upload_path)
-        # messages_csv_drive_file_name = os.path.basename(pipeline_configuration.drive_upload.messages_upload_path)
-        # drive_client_wrapper.update_or_create(csv_by_message_output_path, messages_csv_drive_dir,
-        #                                       target_file_name=messages_csv_drive_file_name,
-        #                                       target_folder_is_shared_with_me=True)
-        #
-        # individuals_csv_drive_dir = os.path.dirname(pipeline_configuration.drive_upload.individuals_upload_path)
-        # individuals_csv_drive_file_name = os.path.basename(pipeline_configuration.drive_upload.individuals_upload_path)
-        # drive_client_wrapper.update_or_create(csv_by_individual_output_path, individuals_csv_drive_dir,
-        #                                       target_file_name=individuals_csv_drive_file_name,
-        #                                       target_folder_is_shared_with_me=True)
+        messages_csv_drive_dir = os.path.dirname(pipeline_configuration.drive_upload.messages_upload_path)
+        messages_csv_drive_file_name = os.path.basename(pipeline_configuration.drive_upload.messages_upload_path)
+        drive_client_wrapper.update_or_create(csv_by_message_output_path, messages_csv_drive_dir,
+                                              target_file_name=messages_csv_drive_file_name,
+                                              target_folder_is_shared_with_me=True)
+
+        individuals_csv_drive_dir = os.path.dirname(pipeline_configuration.drive_upload.individuals_upload_path)
+        individuals_csv_drive_file_name = os.path.basename(pipeline_configuration.drive_upload.individuals_upload_path)
+        drive_client_wrapper.update_or_create(csv_by_individual_output_path, individuals_csv_drive_dir,
+                                              target_file_name=individuals_csv_drive_file_name,
+                                              target_folder_is_shared_with_me=True)
 
         traced_data_drive_dir = os.path.dirname(pipeline_configuration.drive_upload.traced_data_upload_path)
         traced_data_drive_file_name = os.path.basename(pipeline_configuration.drive_upload.traced_data_upload_path)
