@@ -1610,17 +1610,6 @@
             ]
         },
         {
-            "CodeID": "code-6ff5616f",
-            "DisplayText": "kirinyaga county",
-            "CodeType": "Normal",
-            "NumericValue": 19,
-            "StringValue": "kirinyaga_county",
-            "VisibleInCoda": true,
-            "MatchValues": [
-                "kirinyaga_county"
-            ]
-        },
-        {
             "CodeID": "code-394ee616",
             "DisplayText": "kisauni",
             "CodeType": "Normal",
@@ -2336,17 +2325,6 @@
             ]
         },
         {
-            "CodeID": "code-607bec6c",
-            "DisplayText": "muranga county",
-            "CodeType": "Normal",
-            "NumericValue": 20,
-            "StringValue": "muranga_county",
-            "VisibleInCoda": true,
-            "MatchValues": [
-                "muranga county"
-            ]
-        },
-        {
             "CodeID": "code-1aefb8d1",
             "DisplayText": "mvita",
             "CodeType": "Normal",
@@ -2633,17 +2611,6 @@
             ]
         },
         {
-            "CodeID": "code-9f7f9712",
-            "DisplayText": "nyeri county",
-            "CodeType": "Normal",
-            "NumericValue": 18,
-            "StringValue": "nyeri_county",
-            "VisibleInCoda": true,
-            "MatchValues": [
-                "nyeri county"
-            ]
-        },
-        {
             "CodeID": "code-211b8756",
             "DisplayText": "nyeri town",
             "CodeType": "Normal",
@@ -2651,7 +2618,7 @@
             "StringValue": "nyeri_town",
             "VisibleInCoda": true,
             "MatchValues": [
-                "nyeri"
+                "nyeri town"
             ]
         },
         {
