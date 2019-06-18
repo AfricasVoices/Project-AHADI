@@ -11,8 +11,13 @@
     "ahadi_demog"
   ],
   "RapidProTestContactUUIDs": [
+    "2afc675d-97d5-428d-a563-258e7a5515f3",
+    "4b91bbf9-9c1e-49df-bdc9-c34a426b0109",
+    "9ab6977e-1a3e-4f11-af8d-bdcd0c4fefc0",
     "9ade6864-6065-4548-9441-bbce41215f42",
-    "2afc675d-97d5-428d-a563-258e7a5515f3"
+    "c6fd0fda-9d92-4a08-9ad5-3249bd3e52f1",
+    "de7dea5d-e348-44df-80c7-505c7b10be58",
+    "f0e1fc3b-a62c-4460-b146-b66216a2107a"
   ],
   "PhoneNumberUuidTable": {
     "FirebaseCredentialsFileURL": "gs://avf-credentials/avf-id-infrastructure-firebase-adminsdk-6xps8-b9173f2bfd.json",
@@ -45,9 +50,9 @@
     {"RapidProKey": "Livelihood (Value) - ahadi_demog", "PipelineKey": "livelihood_raw"},
     {"RapidProKey": "Livelihood (Time) - ahadi_demog", "PipelineKey": "livelihood_time"}
   ],
-  "ProjectStartDate": "2000-01-01T00:00:00+03:00",
-  "ProjectEndDate": "2100-01-01T24:00:00+03:00",
-  "FilterTestMessages": false,
+  "ProjectStartDate": "2019-06-17T00:00:00+03:00",
+  "ProjectEndDate": "2019-07-14T24:00:00+03:00",
+  "FilterTestMessages": true,
   "DriveUpload": {
     "DriveCredentialsFileURL": "gs://avf-credentials/pipeline-runner-service-acct-avf-data-core-64cc71459fe7.json",
     "ProductionUploadPath": "ahadi_analysis_outputs/ahadi_s01_production.csv",
