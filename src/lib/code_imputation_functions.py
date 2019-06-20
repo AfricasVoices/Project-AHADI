@@ -16,13 +16,21 @@ def make_location_code(scheme, clean_value):
         return scheme.get_code_with_match_value(clean_value)
 
 
-def impute_yes_no_reasons_codes(user, data, binary_configuration, reasons_configuration):
+def impute_yes_no_reasons_codes(user, data, coding_configurations):
     # Synchronise the control codes between the binary and reasons schemes:
     # Some RQA datasets have a binary scheme, which is always labelled, and a reasons scheme, which is only labelled
     # if there is an additional reason given. Importing those two schemes separately above caused the labels in
     # each scheme to go out of sync with each other, e.g. reasons can be NR when the binary *was* reviewed.
     # This block updates the reasons scheme in cases where only a binary label was set, by assigning the
     # label 'NC' if the binary label was set to a normal code, otherwise to be the same control code as the binary.
+    binary_configuration = coding_configurations[0]
+    reasons_configuration = coding_configurations[1]
+
+    # TODO: Switch to using CodingModes.SINGLE/MULTIPLE once configuration is being set in configuration json
+    #       rather than in pipeline_configuration.py
+    assert binary_configuration.coding_mode == "single"
+    assert reasons_configuration.coding_mode == "multiple"
+
     for td in data:
         binary_label = td[binary_configuration.coded_field]
         binary_code = binary_configuration.code_scheme.get_code_with_id(binary_label["CodeID"])
