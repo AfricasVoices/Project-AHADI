@@ -5,7 +5,7 @@ from core_data_modules.cleaners import Codes, swahili
 from core_data_modules.data_models import validators
 from dateutil.parser import isoparse
 
-from src.lib import imputation_functions
+from src.lib import code_imputation_functions
 from src.lib.code_schemes import CodeSchemes
 
 
@@ -132,7 +132,7 @@ class PipelineConfiguration(object):
                            analysis_file_key="county"
                        )
                    ],
-                   code_imputation_function=imputation_functions.impute_location_codes)
+                   code_imputation_function=code_imputation_functions.impute_location_codes)
 
     SURVEY_CODING_PLANS = []
     SURVEY_CODING_PLANS.append(LOCATION_CODING_PLAN)
