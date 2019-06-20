@@ -114,7 +114,7 @@ class PipelineConfiguration(object):
         else:
             return Codes.NOT_CODED
 
-    LOCATION_CODING_PLAN = \
+    SURVEY_CODING_PLANS = [
         CodingPlan(raw_field="location_raw",
                    time_field="location_time",
                    coda_filename="location.json",
@@ -132,11 +132,8 @@ class PipelineConfiguration(object):
                            analysis_file_key="county"
                        )
                    ],
-                   code_imputation_function=code_imputation_functions.impute_location_codes)
+                   code_imputation_function=code_imputation_functions.impute_location_codes),
 
-    SURVEY_CODING_PLANS = []
-    SURVEY_CODING_PLANS.append(LOCATION_CODING_PLAN)
-    SURVEY_CODING_PLANS.extend([
         CodingPlan(raw_field="gender_raw",
                    time_field="gender_time",
                    coda_filename="gender.json",
@@ -172,7 +169,7 @@ class PipelineConfiguration(object):
                            analysis_file_key="livelihood"
                        )
                    ])
-    ])
+    ]
 
     def __init__(self, rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,
                  rapid_pro_test_contact_uuids, phone_number_uuid_table, recovery_csv_urls, rapid_pro_key_remappings,
