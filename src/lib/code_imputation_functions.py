@@ -71,7 +71,7 @@ def impute_yes_no_reasons_codes(user, data, coding_configurations):
                 )
 
 
-def impute_location_codes(user, data, location_configurations):
+def impute_kenya_location_codes(user, data, location_configurations):
     for td in data:
         # Up to 1 location code should have been assigned in Coda. Search for that code,
         # ensuring that only 1 has been assigned or, if multiple have been assigned, that they are non-conflicting

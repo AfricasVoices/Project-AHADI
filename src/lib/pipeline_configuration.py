@@ -132,7 +132,7 @@ class PipelineConfiguration(object):
                            analysis_file_key="county"
                        )
                    ],
-                   code_imputation_function=code_imputation_functions.impute_location_codes),
+                   code_imputation_function=code_imputation_functions.impute_kenya_location_codes),
 
         CodingPlan(raw_field="gender_raw",
                    time_field="gender_time",
