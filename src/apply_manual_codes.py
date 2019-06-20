@@ -68,18 +68,6 @@ class ApplyManualCodes(object):
                             nc_dict[cc.coded_field] = nc_label if cc.coding_mode == CodingModes.SINGLE else [nc_label]
                 td.append_data(nc_dict, Metadata(user, Metadata.get_call_location(), time.time()))
 
-        # for plan in PipelineConfiguration.RQA_CODING_PLANS:
-        #     if len(plan.coding_configurations) < 2:
-        #         continue
-        #
-        #     binary_configuration = plan.coding_configurations[0]
-        #     reasons_configuration = plan.coding_configurations[1]
-        #
-        #     cls._impute_yes_no_reasons_codes(user, data, binary_configuration, reasons_configuration)
-        #
-        # # Set constituency/county codes from the coded district field.
-        # cls._impute_location_codes(user, data)
-
         # Run code imputation functions
         for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
             if plan.code_imputation_function is not None:
