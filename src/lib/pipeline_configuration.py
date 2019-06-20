@@ -141,6 +141,7 @@ class PipelineConfiguration(object):
                        CodingConfiguration(
                            coding_mode=CodingModes.SINGLE,
                            code_scheme=CodeSchemes.GENDER,
+                           cleaner=swahili.DemographicCleaner.clean_gender,
                            coded_field="gender_coded",
                            analysis_file_key="gender"
                        )
@@ -153,6 +154,7 @@ class PipelineConfiguration(object):
                        CodingConfiguration(
                            coding_mode=CodingModes.SINGLE,
                            code_scheme=CodeSchemes.AGE,
+                           cleaner=lambda text: PipelineConfiguration.clean_age_with_range_filter(text),
                            coded_field="age_coded",
                            analysis_file_key="age"
                        )
