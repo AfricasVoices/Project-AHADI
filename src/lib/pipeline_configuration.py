@@ -2,29 +2,11 @@ import json
 from urllib.parse import urlparse
 
 from core_data_modules.cleaners import Codes, swahili
-from core_data_modules.data_models import Scheme, validators
+from core_data_modules.data_models import validators
 from dateutil.parser import isoparse
 
-
-def _open_scheme(filename):
-    with open(f"code_schemes/{filename}", "r") as f:
-        firebase_map = json.load(f)
-        return Scheme.from_firebase_map(firebase_map)
-
-
-class CodeSchemes(object):
-    S01E01_REASONS = _open_scheme("s01e01_reasons.json")
-    S01E02_REASONS = _open_scheme("s01e02_reasons.json")
-    S01E03_REASONS = _open_scheme("s01e03_reasons.json")
-    S01E04_REASONS = _open_scheme("s01e04_reasons.json")
-
-    CONSTITUENCY = _open_scheme("constituency.json")
-    COUNTY = _open_scheme("county.json")
-    GENDER = _open_scheme("gender.json")
-    AGE = _open_scheme("age.json")
-    LIVELIHOOD = _open_scheme("livelihood.json")
-
-    # WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
+from src.lib import imputation_functions
+from src.lib.code_schemes import CodeSchemes
 
 
 class CodingModes(object):
@@ -46,13 +28,14 @@ class CodingConfiguration(object):
 # TODO: Rename CodingPlan to something like DatasetConfiguration?
 class CodingPlan(object):
     def __init__(self, raw_field, coda_filename, coding_configurations, time_field=None,
-                 run_id_field=None, icr_filename=None, id_field=None):
+                 run_id_field=None, icr_filename=None, id_field=None, code_imputation_function=None):
         self.raw_field = raw_field
         self.time_field = time_field
         self.run_id_field = run_id_field
         self.coda_filename = coda_filename
         self.icr_filename = icr_filename
         self.coding_configurations = coding_configurations
+        self.code_imputation_function = code_imputation_function
 
         if id_field is None:
             id_field = "{}_id".format(self.raw_field)
@@ -148,7 +131,8 @@ class PipelineConfiguration(object):
                            coded_field="county_coded",
                            analysis_file_key="county"
                        )
-                   ])
+                   ],
+                   code_imputation_function=imputation_functions.impute_location_codes)
 
     SURVEY_CODING_PLANS = []
     SURVEY_CODING_PLANS.append(LOCATION_CODING_PLAN)
