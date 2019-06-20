@@ -27,22 +27,32 @@ class CodeSchemes(object):
     # WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
 
 
-class CodingPlan(object):
-    def __init__(self, raw_field, coded_field, coda_filename, cleaner=None, code_scheme=None, time_field=None,
-                 run_id_field=None, icr_filename=None, analysis_file_key=None, id_field=None,
-                 binary_code_scheme=None, binary_coded_field=None, binary_analysis_file_key=None):
-        self.raw_field = raw_field
-        self.coded_field = coded_field
-        self.coda_filename = coda_filename
-        self.icr_filename = icr_filename
-        self.cleaner = cleaner
+class CodingModes(object):
+    SINGLE = "single"
+    MULTIPLE = "multiple"
+
+
+class CodingConfiguration(object):
+    def __init__(self, coding_mode, code_scheme, coded_field, analysis_file_key, cleaner=None):
+        assert coding_mode in {CodingModes.SINGLE, CodingModes.MULTIPLE}
+
+        self.coding_mode = coding_mode
         self.code_scheme = code_scheme
+        self.coded_field = coded_field
+        self.analysis_file_key = analysis_file_key
+        self.cleaner = cleaner
+
+
+# TODO: Rename CodingPlan to something like DatasetConfiguration?
+class CodingPlan(object):
+    def __init__(self, raw_field, coda_filename, coding_configurations, time_field=None,
+                 run_id_field=None, icr_filename=None, id_field=None):
+        self.raw_field = raw_field
         self.time_field = time_field
         self.run_id_field = run_id_field
-        self.analysis_file_key = analysis_file_key
-        self.binary_code_scheme = binary_code_scheme
-        self.binary_coded_field = binary_coded_field
-        self.binary_analysis_file_key = binary_analysis_file_key
+        self.coda_filename = coda_filename
+        self.icr_filename = icr_filename
+        self.coding_configurations = coding_configurations
 
         if id_field is None:
             id_field = "{}_id".format(self.raw_field)
@@ -52,40 +62,60 @@ class CodingPlan(object):
 class PipelineConfiguration(object):
     RQA_CODING_PLANS = [
         CodingPlan(raw_field="rqa_s01e01_raw",
-                   coded_field="rqa_s01e01_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e01_run_id",
                    coda_filename="s01e01.json",
                    icr_filename="s01e01.csv",
-                   run_id_field="rqa_s01e01_run_id",
-                   analysis_file_key="rqa_s01e01_",
-                   code_scheme=CodeSchemes.S01E01_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E01_REASONS,
+                           coded_field="rqa_s01e01_coded",
+                           analysis_file_key="rqa_s01e01_"
+                       )
+                   ]),
 
         CodingPlan(raw_field="rqa_s01e02_raw",
-                   coded_field="rqa_s01e02_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e02_run_id",
                    coda_filename="s01e02.json",
                    icr_filename="s01e02.csv",
-                   run_id_field="rqa_s01e02_run_id",
-                   analysis_file_key="rqa_s01e02_",
-                   code_scheme=CodeSchemes.S01E02_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E02_REASONS,
+                           coded_field="rqa_s01e02_coded",
+                           analysis_file_key="rqa_s01e02_"
+                       )
+                   ]),
 
         CodingPlan(raw_field="rqa_s01e03_raw",
-                   coded_field="rqa_s01e03_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e03_run_id",
                    coda_filename="s01e03.json",
                    icr_filename="s01e03.csv",
-                   run_id_field="rqa_s01e03_run_id",
-                   analysis_file_key="rqa_s01e03_",
-                   code_scheme=CodeSchemes.S01E03_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E02_REASONS,
+                           coded_field="rqa_s01e03_coded",
+                           analysis_file_key="rqa_s01e03_"
+                       )
+                   ]),
 
         CodingPlan(raw_field="rqa_s01e04_raw",
-                   coded_field="rqa_s01e04_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e04_run_id",
                    coda_filename="s01e04.json",
                    icr_filename="s01e04.csv",
-                   run_id_field="rqa_s01e04_run_id",
-                   analysis_file_key="rqa_s01e04_",
-                   code_scheme=CodeSchemes.S01E04_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E01_REASONS,
+                           coded_field="rqa_s01e04_coded",
+                           analysis_file_key="rqa_s01e04_"
+                       )
+                   ]),
     ]
 
     @staticmethod
@@ -101,47 +131,63 @@ class PipelineConfiguration(object):
         else:
             return Codes.NOT_CODED
 
-    LOCATION_CODING_PLANS = [
+    LOCATION_CODING_PLAN = \
         CodingPlan(raw_field="location_raw",
-                   coded_field="constituency_coded",
                    time_field="location_time",
                    coda_filename="location.json",
-                   analysis_file_key="constituency",
-                   code_scheme=CodeSchemes.CONSTITUENCY),
-
-        CodingPlan(raw_field="location_raw",
-                   coded_field="county_coded",
-                   time_field="location_time",
-                   coda_filename="location.json",
-                   analysis_file_key="county",
-                   code_scheme=CodeSchemes.COUNTY)
-    ]
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.CONSTITUENCY,
+                           coded_field="constituency_coded",
+                           analysis_file_key="constituency"
+                       ),
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.COUNTY,
+                           coded_field="county_coded",
+                           analysis_file_key="county"
+                       )
+                   ])
 
     SURVEY_CODING_PLANS = []
-    SURVEY_CODING_PLANS.extend(LOCATION_CODING_PLANS)
+    SURVEY_CODING_PLANS.append(LOCATION_CODING_PLAN)
     SURVEY_CODING_PLANS.extend([
         CodingPlan(raw_field="gender_raw",
-                   coded_field="gender_coded",
                    time_field="gender_time",
                    coda_filename="gender.json",
-                   analysis_file_key="gender",
-                   cleaner=swahili.DemographicCleaner.clean_gender,
-                   code_scheme=CodeSchemes.GENDER),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.GENDER,
+                           coded_field="gender_coded",
+                           analysis_file_key="gender"
+                       )
+                   ]),
 
         CodingPlan(raw_field="age_raw",
-                   coded_field="age_coded",
                    time_field="age_time",
                    coda_filename="age.json",
-                   analysis_file_key="age",
-                   cleaner=lambda text: PipelineConfiguration.clean_age_with_range_filter(text),
-                   code_scheme=CodeSchemes.AGE),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.AGE,
+                           coded_field="age_coded",
+                           analysis_file_key="age"
+                       )
+                   ]),
 
         CodingPlan(raw_field="livelihood_raw",
-                   coded_field="livelihood_coded",
                    time_field="livelihood_time",
                    coda_filename="livelihood.json",
-                   analysis_file_key="livelihood",
-                   code_scheme=CodeSchemes.LIVELIHOOD)
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.LIVELIHOOD,
+                           coded_field="livelihood_coded",
+                           analysis_file_key="livelihood"
+                       )
+                   ])
     ])
 
     def __init__(self, rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,

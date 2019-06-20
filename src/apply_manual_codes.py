@@ -9,7 +9,7 @@ from core_data_modules.traced_data.io import TracedDataCodaV2IO
 from core_data_modules.util import TimeUtils
 
 from src.lib import PipelineConfiguration
-from src.lib.pipeline_configuration import CodeSchemes
+from src.lib.pipeline_configuration import CodeSchemes, CodingModes
 
 
 class ApplyManualCodes(object):
@@ -21,15 +21,62 @@ class ApplyManualCodes(object):
             return scheme.get_code_with_match_value(clean_value)
 
     @classmethod
+    def _impute_yes_no_reasons_codes(cls, user, data, binary_configuration, reasons_configuration):
+        # Synchronise the control codes between the binary and reasons schemes:
+        # Some RQA datasets have a binary scheme, which is always labelled, and a reasons scheme, which is only labelled
+        # if there is an additional reason given. Importing those two schemes separately above caused the labels in
+        # each scheme to go out of sync with each other, e.g. reasons can be NR when the binary *was* reviewed.
+        # This block updates the reasons scheme in cases where only a binary label was set, by assigning the
+        # label 'NC' if the binary label was set to a normal code, otherwise to be the same control code as the binary.
+        for td in data:
+            binary_label = td[binary_configuration.coded_field]
+            binary_code = binary_configuration.code_scheme.get_code_with_id(binary_label["CodeID"])
+
+            binary_label_present = \
+                binary_label["CodeID"] != binary_configuration.code_scheme.get_code_with_control_code(Codes.NOT_REVIEWED).code_id
+
+            reasons_label_present = \
+                len(td[reasons_configuration.coded_field]) > 1 or \
+                td[reasons_configuration.coded_field][0]["CodeID"] != reasons_configuration.code_scheme.get_code_with_control_code(Codes.NOT_REVIEWED).code_id
+
+            if binary_label_present and not reasons_label_present:
+                if binary_code.code_type == "Control":
+                    control_code = binary_code.control_code
+                    reasons_code = reasons_configuration.code_scheme.get_code_with_control_code(control_code)
+
+                    reasons_label = CleaningUtils.make_label_from_cleaner_code(
+                        reasons_configuration.code_scheme, reasons_code,
+                        Metadata.get_call_location(), origin_name="Pipeline Code Synchronisation")
+
+                    td.append_data(
+                        {reasons_configuration.coded_field: [reasons_label.to_dict()]},
+                        Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string())
+                    )
+                else:
+                    assert binary_code.code_type == "Normal"
+
+                    nc_label = CleaningUtils.make_label_from_cleaner_code(
+                        reasons_configuration.code_scheme,
+                        reasons_configuration.code_scheme.get_code_with_control_code(Codes.NOT_CODED),
+                        Metadata.get_call_location(), origin_name="Pipeline Code Synchronisation"
+                    )
+                    td.append_data(
+                        {reasons_configuration.coded_field: [nc_label.to_dict()]},
+                        Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string())
+                    )
+
+    @classmethod
     def _impute_location_codes(cls, user, data):
+        plan = PipelineConfiguration.LOCATION_CODING_PLAN
+
         for td in data:
             # Up to 1 location code should have been assigned in Coda. Search for that code,
             # ensuring that only 1 has been assigned or, if multiple have been assigned, that they are non-conflicting
             # control codes
             location_code = None
 
-            for plan in PipelineConfiguration.LOCATION_CODING_PLANS:
-                coda_code = plan.code_scheme.get_code_with_id(td[plan.coded_field]["CodeID"])
+            for cc in plan.coding_configurations:
+                coda_code = cc.code_scheme.get_code_with_id(td[cc.coded_field]["CodeID"])
                 if location_code is not None:
                     if not (
                             coda_code.code_id == location_code.code_id or coda_code.control_code == Codes.NOT_REVIEWED):
@@ -45,11 +92,11 @@ class ApplyManualCodes(object):
             # If a control code was found, set all other location keys to that control code,
             # otherwise convert the provided location to the other locations in the hierarchy.
             if location_code.code_type == "Control":
-                for plan in PipelineConfiguration.LOCATION_CODING_PLANS:
+                for cc in plan.coding_configurations:
                     td.append_data({
-                        plan.coded_field: CleaningUtils.make_label_from_cleaner_code(
-                            plan.code_scheme,
-                            plan.code_scheme.get_code_with_control_code(location_code.control_code),
+                        cc.coded_field: CleaningUtils.make_label_from_cleaner_code(
+                            cc.code_scheme,
+                            cc.code_scheme.get_code_with_control_code(location_code.control_code),
                             Metadata.get_call_location()
                         ).to_dict()
                     }, Metadata(user, Metadata.get_call_location(), time.time()))
@@ -70,46 +117,45 @@ class ApplyManualCodes(object):
 
     @classmethod
     def apply_manual_codes(cls, user, data, coda_input_dir):
-        # Merge manually coded radio show files into the cleaned dataset
-        for plan in PipelineConfiguration.RQA_CODING_PLANS:
-            rqa_messages = [td for td in data if plan.raw_field in td]
+        # Merge manually coded data into the cleaned dataset
+        for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
             coda_input_path = path.join(coda_input_dir, plan.coda_filename)
 
-            f = None
-            try:
-                if path.exists(coda_input_path):
-                    f = open(coda_input_path, "r")
-                TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable_multi_coded(
-                    user, rqa_messages, plan.id_field, {plan.coded_field: plan.code_scheme}, f)
+            for cc in plan.coding_configurations:
+                f = None
+                try:
+                    if path.exists(coda_input_path):
+                        f = open(coda_input_path, "r")
 
-                if plan.binary_code_scheme is not None:
+                    if cc.coding_mode == CodingModes.SINGLE:
+                        TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
+                            user, data, plan.id_field, {cc.coded_field: cc.code_scheme}, f)
+                    else:
+                        TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable_multi_coded(
+                            user, data, plan.id_field, {cc.coded_field: cc.code_scheme}, f)
+                finally:
                     if f is not None:
-                        f.seek(0)
-                    TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
-                        user, rqa_messages, plan.id_field, {plan.binary_coded_field: plan.binary_code_scheme}, f)
-            finally:
-                if f is not None:
-                    f.close()
+                        f.close()
 
-        # At this point, the TracedData objects still contain messages for at most one week each.
-        # Label the weeks for which there is no response as TRUE_MISSING.
+        # Label data for which there is no response as TRUE_MISSING.
+        # Label data for which the response is the empty string as NOT_CODED.
         for td in data:
             missing_dict = dict()
-            for plan in PipelineConfiguration.RQA_CODING_PLANS:
+            for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
                 if plan.raw_field not in td:
-                    na_label = CleaningUtils.make_label_from_cleaner_code(
-                        plan.code_scheme, plan.code_scheme.get_code_with_control_code(Codes.TRUE_MISSING),
-                        Metadata.get_call_location()
-                    )
-                    missing_dict[plan.coded_field] = [na_label.to_dict()]
-
-                    if plan.binary_code_scheme is not None:
+                    for cc in plan.coding_configurations:
                         na_label = CleaningUtils.make_label_from_cleaner_code(
-                            plan.binary_code_scheme, plan.binary_code_scheme.get_code_with_control_code(Codes.TRUE_MISSING),
+                            cc.code_scheme, cc.code_scheme.get_code_with_control_code(Codes.TRUE_MISSING),
                             Metadata.get_call_location()
-                        )
-                        missing_dict[plan.binary_coded_field] = na_label.to_dict()
-
+                        ).to_dict()
+                        missing_dict[cc.coded_field] = na_label if cc.coding_mode == CodingModes.SINGLE else [na_label]
+                elif td[plan.raw_field] == "":
+                    for cc in plan.coding_configurations:
+                        nc_label = CleaningUtils.make_label_from_cleaner_code(
+                            cc.code_scheme, cc.code_scheme.get_code_with_control_code(Codes.NOT_CODED),
+                            Metadata.get_call_location()
+                        ).to_dict()
+                        missing_dict[cc.coded_field] = nc_label if cc.coding_mode == CodingModes.SINGLE else [nc_label]
             td.append_data(missing_dict, Metadata(user, Metadata.get_call_location(), time.time()))
 
         # Mark data that is noise as Codes.NOT_CODED
@@ -117,101 +163,23 @@ class ApplyManualCodes(object):
             if td["noise"]:
                 nc_dict = dict()
                 for plan in PipelineConfiguration.RQA_CODING_PLANS:
-                    if plan.coded_field not in td:
-                        nc_label = CleaningUtils.make_label_from_cleaner_code(
-                            plan.code_scheme, plan.code_scheme.get_code_with_control_code(Codes.NOT_CODED),
-                            Metadata.get_call_location()
-                        )
-                        nc_dict[plan.coded_field] = [nc_label.to_dict()]
-
-                        if plan.binary_code_scheme is not None:
+                    for cc in plan.coding_configurations:
+                        if cc.coded_field not in td:
                             nc_label = CleaningUtils.make_label_from_cleaner_code(
-                                plan.binary_code_scheme, plan.binary_code_scheme.get_code_with_control_code(Codes.NOT_CODED),
+                                cc.code_scheme, cc.code_scheme.get_code_with_control_code(Codes.NOT_CODED),
                                 Metadata.get_call_location()
-                            )
-                            nc_dict[plan.binary_coded_field] = nc_label.to_dict()
-
+                            ).to_dict()
+                            nc_dict[cc.coded_field] = nc_label if cc.coding_mode == CodingModes.SINGLE else [nc_label]
                 td.append_data(nc_dict, Metadata(user, Metadata.get_call_location(), time.time()))
 
-        # Synchronise the control codes between the binary and reasons schemes:
-        # Some RQA datasets have a binary scheme, which is always labelled, and a reasons scheme, which is only labelled
-        # if there is an additional reason given. Importing those two schemes separately above caused the labels in
-        # each scheme to go out of sync with each other, e.g. reasons can be NR when the binary *was* reviewed.
-        # This block updates the reasons scheme in cases where only a binary label was set, by assigning the
-        # label 'NC' if the binary label was set to a normal code, otherwise to be the same control code as the binary.
         for plan in PipelineConfiguration.RQA_CODING_PLANS:
-            rqa_messages = [td for td in data if plan.raw_field in td]
-            if plan.binary_code_scheme is not None:
-                for td in rqa_messages:
-                    binary_label = td[plan.binary_coded_field]
-                    binary_code = plan.binary_code_scheme.get_code_with_id(binary_label["CodeID"])
+            if len(plan.coding_configurations) < 2:
+                continue
 
-                    binary_label_present = binary_label["CodeID"] != \
-                                           plan.binary_code_scheme.get_code_with_control_code(
-                                               Codes.NOT_REVIEWED).code_id
+            binary_configuration = plan.coding_configurations[0]
+            reasons_configuration = plan.coding_configurations[1]
 
-                    reasons_label_present = len(td[plan.coded_field]) > 1 or td[plan.coded_field][0][
-                        "CodeID"] != \
-                                            plan.code_scheme.get_code_with_control_code(
-                                                Codes.NOT_REVIEWED).code_id
-
-                    if binary_label_present and not reasons_label_present:
-                        if binary_code.code_type == "Control":
-                            control_code = binary_code.control_code
-                            reasons_code = plan.code_scheme.get_code_with_control_code(control_code)
-
-                            reasons_label = CleaningUtils.make_label_from_cleaner_code(
-                                plan.code_scheme, reasons_code,
-                                Metadata.get_call_location(), origin_name="Pipeline Code Synchronisation")
-
-                            td.append_data(
-                                {plan.coded_field: [reasons_label.to_dict()]},
-                                Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string())
-                            )
-                        else:
-                            assert binary_code.code_type == "Normal"
-
-                            nc_label = CleaningUtils.make_label_from_cleaner_code(
-                                plan.code_scheme, plan.code_scheme.get_code_with_control_code(Codes.NOT_CODED),
-                                Metadata.get_call_location(), origin_name="Pipeline Code Synchronisation"
-                            )
-                            td.append_data(
-                                {plan.coded_field: [nc_label.to_dict()]},
-                                Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string())
-                            )
-
-        # Merge manually coded survey files into the cleaned dataset
-        for plan in PipelineConfiguration.SURVEY_CODING_PLANS:
-            f = None
-            try:
-                coda_input_path = path.join(coda_input_dir, plan.coda_filename)
-                if path.exists(coda_input_path):
-                    f = open(coda_input_path, "r")
-                TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
-                    user, data, plan.id_field, {plan.coded_field: plan.code_scheme}, f)
-            finally:
-                if f is not None:
-                    f.close()
-
-        # Not everyone will have answered all of the demographic flows.
-        # Label demographic questions which had no responses as TRUE_MISSING.
-        # Label data which is just the empty string as NOT_CODED.
-        for td in data:
-            missing_dict = dict()
-            for plan in PipelineConfiguration.SURVEY_CODING_PLANS:
-                if plan.raw_field not in td:
-                    na_label = CleaningUtils.make_label_from_cleaner_code(
-                        plan.code_scheme, plan.code_scheme.get_code_with_control_code(Codes.TRUE_MISSING),
-                        Metadata.get_call_location()
-                    )
-                    missing_dict[plan.coded_field] = na_label.to_dict()
-                elif td[plan.raw_field] == "":
-                    nc_label = CleaningUtils.make_label_from_cleaner_code(
-                        plan.code_scheme, plan.code_scheme.get_code_with_control_code(Codes.NOT_CODED),
-                        Metadata.get_call_location()
-                    )
-                    missing_dict[plan.coded_field] = nc_label.to_dict()
-            td.append_data(missing_dict, Metadata(user, Metadata.get_call_location(), time.time()))
+            cls._impute_yes_no_reasons_codes(user, data, binary_configuration, reasons_configuration)
 
         # Set constituency/county codes from the coded district field.
         cls._impute_location_codes(user, data)
