@@ -12,22 +12,30 @@ from src.lib.code_schemes import CodeSchemes
 class CodingModes(object):
     SINGLE = "single"
     MULTIPLE = "multiple"
+    
+
+class FoldingModes(object):
+    ASSERT_EQUAL = "ASSERT_EQUAL"
+    YES_NO_AMB = "YES_NO_AMB"
+    CONCATENATE = "CONCATENATE"
+    MATRIX = "MATRIX"
 
 
 class CodingConfiguration(object):
-    def __init__(self, coding_mode, code_scheme, coded_field, analysis_file_key, cleaner=None):
+    def __init__(self, coding_mode, code_scheme, coded_field, analysis_file_key, folding_mode, cleaner=None):
         assert coding_mode in {CodingModes.SINGLE, CodingModes.MULTIPLE}
 
         self.coding_mode = coding_mode
         self.code_scheme = code_scheme
         self.coded_field = coded_field
         self.analysis_file_key = analysis_file_key
+        self.folding_mode = folding_mode
         self.cleaner = cleaner
 
 
 # TODO: Rename CodingPlan to something like DatasetConfiguration?
 class CodingPlan(object):
-    def __init__(self, raw_field, coda_filename, coding_configurations, time_field=None,
+    def __init__(self, raw_field, coda_filename, coding_configurations, raw_field_folding_mode, time_field=None,
                  run_id_field=None, icr_filename=None, id_field=None, code_imputation_function=None):
         self.raw_field = raw_field
         self.time_field = time_field
@@ -36,6 +44,7 @@ class CodingPlan(object):
         self.icr_filename = icr_filename
         self.coding_configurations = coding_configurations
         self.code_imputation_function = code_imputation_function
+        self.raw_field_folding_mode = raw_field_folding_mode
 
         if id_field is None:
             id_field = "{}_id".format(self.raw_field)
@@ -54,9 +63,11 @@ class PipelineConfiguration(object):
                            coding_mode=CodingModes.MULTIPLE,
                            code_scheme=CodeSchemes.S01E01_REASONS,
                            coded_field="rqa_s01e01_coded",
-                           analysis_file_key="rqa_s01e01_"
+                           analysis_file_key="rqa_s01e01_",
+                           folding_mode=FoldingModes.MATRIX
                        )
-                   ]),
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e02_raw",
                    time_field="sent_on",
@@ -68,9 +79,11 @@ class PipelineConfiguration(object):
                            coding_mode=CodingModes.MULTIPLE,
                            code_scheme=CodeSchemes.S01E02_REASONS,
                            coded_field="rqa_s01e02_coded",
-                           analysis_file_key="rqa_s01e02_"
+                           analysis_file_key="rqa_s01e02_",
+                           folding_mode=FoldingModes.MATRIX
                        )
-                   ]),
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e03_raw",
                    time_field="sent_on",
@@ -82,9 +95,11 @@ class PipelineConfiguration(object):
                            coding_mode=CodingModes.MULTIPLE,
                            code_scheme=CodeSchemes.S01E02_REASONS,
                            coded_field="rqa_s01e03_coded",
-                           analysis_file_key="rqa_s01e03_"
+                           analysis_file_key="rqa_s01e03_",
+                           folding_mode=FoldingModes.MATRIX
                        )
-                   ]),
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e04_raw",
                    time_field="sent_on",
@@ -96,9 +111,11 @@ class PipelineConfiguration(object):
                            coding_mode=CodingModes.MULTIPLE,
                            code_scheme=CodeSchemes.S01E01_REASONS,
                            coded_field="rqa_s01e04_coded",
-                           analysis_file_key="rqa_s01e04_"
+                           analysis_file_key="rqa_s01e04_",
+                           folding_mode=FoldingModes.MATRIX
                        )
-                   ]),
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
     ]
 
     @staticmethod
@@ -123,16 +140,19 @@ class PipelineConfiguration(object):
                            coding_mode=CodingModes.SINGLE,
                            code_scheme=CodeSchemes.CONSTITUENCY,
                            coded_field="constituency_coded",
-                           analysis_file_key="constituency"
+                           analysis_file_key="constituency",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
                        ),
                        CodingConfiguration(
                            coding_mode=CodingModes.SINGLE,
                            code_scheme=CodeSchemes.COUNTY,
                            coded_field="county_coded",
-                           analysis_file_key="county"
+                           analysis_file_key="county",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
                        )
                    ],
-                   code_imputation_function=code_imputation_functions.impute_kenya_location_codes),
+                   code_imputation_function=code_imputation_functions.impute_kenya_location_codes,
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="gender_raw",
                    time_field="gender_time",
@@ -143,9 +163,11 @@ class PipelineConfiguration(object):
                            code_scheme=CodeSchemes.GENDER,
                            cleaner=swahili.DemographicCleaner.clean_gender,
                            coded_field="gender_coded",
-                           analysis_file_key="gender"
+                           analysis_file_key="gender",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
                        )
-                   ]),
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="age_raw",
                    time_field="age_time",
@@ -156,9 +178,11 @@ class PipelineConfiguration(object):
                            code_scheme=CodeSchemes.AGE,
                            cleaner=lambda text: PipelineConfiguration.clean_age_with_range_filter(text),
                            coded_field="age_coded",
-                           analysis_file_key="age"
+                           analysis_file_key="age",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
                        )
-                   ]),
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="livelihood_raw",
                    time_field="livelihood_time",
@@ -168,9 +192,11 @@ class PipelineConfiguration(object):
                            coding_mode=CodingModes.SINGLE,
                            code_scheme=CodeSchemes.LIVELIHOOD,
                            coded_field="livelihood_coded",
-                           analysis_file_key="livelihood"
+                           analysis_file_key="livelihood",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
                        )
-                   ])
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL)
     ]
 
     def __init__(self, rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,

@@ -8,7 +8,7 @@ from core_data_modules.traced_data.util import FoldTracedData
 from core_data_modules.util import TimeUtils
 
 from src.lib import PipelineConfiguration
-from src.lib.pipeline_configuration import CodingModes
+from src.lib.pipeline_configuration import CodingModes, FoldingModes
 
 
 class ConsentUtils(object):
@@ -98,19 +98,50 @@ class AnalysisFile(object):
             td.append_data({consent_withdrawn_key: Codes.FALSE},
                            Metadata(user, Metadata.get_call_location(), time.time()))
 
-        # TODO: Set binary keys
-        survey_keys = []
+        # Set the list of keys to be exported and how they are to be handled when folding
+        export_keys = ["uid", consent_withdrawn_key]
+        bool_keys = [
+            consent_withdrawn_key
+
+            # "sms_ad",
+            # "radio_promo",
+            # "radio_show",
+            # "non_logical_time",
+            # "radio_participation_s02e01",
+            # "radio_participation_s02e02",
+            # "radio_participation_s02e03",
+            # "radio_participation_s02e04",
+            # "radio_participation_s02e05",
+            # "radio_participation_s02e06",
+        ]
+        equal_keys = ["uid"]
+        concat_keys = []
         matrix_keys = []
         binary_keys = []
         for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
             for cc in plan.coding_configurations:
                 if cc.coding_mode == CodingModes.SINGLE:
-                    survey_keys.append(cc.analysis_file_key)
-                    if plan.raw_field not in survey_keys:
-                        survey_keys.append(plan.raw_field)
+                    export_keys.append(cc.analysis_file_key)
+
+                    if cc.folding_mode == FoldingModes.ASSERT_EQUAL:
+                        equal_keys.append(cc.analysis_file_key)
+                    elif cc.folding_mode == FoldingModes.YES_NO_AMB:
+                        binary_keys.append(cc.analysis_file_key)
+                    else:
+                        assert False, f"Incompatible folding_mode {plan.folding_mode}"
                 else:
+                    assert cc.folding_mode == FoldingModes.MATRIX
                     for code in cc.code_scheme.codes:
+                        export_keys.append(f"{cc.analysis_file_key}{code.string_value}")
                         matrix_keys.append(f"{cc.analysis_file_key}{code.string_value}")
+
+            export_keys.append(plan.raw_field)
+            if plan.raw_field_folding_mode == FoldingModes.CONCATENATE:
+                concat_keys.append(plan.raw_field)
+            elif plan.raw_field_folding_mode == FoldingModes.ASSERT_EQUAL:
+                equal_keys.append(plan.raw_field)
+            else:
+                assert False, f"Incompatible raw_field_folding_mode {plan.raw_field_folding_mode}"
 
         # Convert codes to their string/matrix values
         for td in data:
@@ -133,32 +164,6 @@ class AnalysisFile(object):
                                 analysis_dict[key] = Codes.MATRIX_0
             td.append_data(analysis_dict,
                            Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string()))
-
-        equal_keys = ["uid"]
-        equal_keys.extend(survey_keys)
-        concat_keys = [plan.raw_field for plan in PipelineConfiguration.RQA_CODING_PLANS]
-        bool_keys = [
-            consent_withdrawn_key,
-
-            # "sms_ad",
-            # "radio_promo",
-            # "radio_show",
-            # "non_logical_time",
-            # "radio_participation_s02e01",
-            # "radio_participation_s02e02",
-            # "radio_participation_s02e03",
-            # "radio_participation_s02e04",
-            # "radio_participation_s02e05",
-            # "radio_participation_s02e06",
-        ]
-
-        # Export to CSV
-        export_keys = ["uid"]
-        export_keys.extend(bool_keys)
-        export_keys.extend(matrix_keys)
-        export_keys.extend(binary_keys)
-        export_keys.extend(concat_keys)
-        export_keys.extend(survey_keys)
 
         # Set consent withdrawn based on presence of data coded as "stop"
         ConsentUtils.determine_consent_withdrawn(
