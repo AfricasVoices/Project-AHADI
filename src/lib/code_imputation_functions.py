@@ -28,8 +28,8 @@ def impute_yes_no_reasons_codes(user, data, coding_configurations):
 
     # TODO: Switch to using CodingModes.SINGLE/MULTIPLE once configuration is being set in configuration json
     #       rather than in pipeline_configuration.py
-    assert binary_configuration.coding_mode == "single"
-    assert reasons_configuration.coding_mode == "multiple"
+    assert binary_configuration.coding_mode == "SINGLE"
+    assert reasons_configuration.coding_mode == "MULTIPLE"
 
     for td in data:
         binary_label = td[binary_configuration.coded_field]

@@ -10,8 +10,8 @@ from src.lib.code_schemes import CodeSchemes
 
 
 class CodingModes(object):
-    SINGLE = "single"
-    MULTIPLE = "multiple"
+    SINGLE = "SINGLE"
+    MULTIPLE = "MULTIPLE"
     
 
 class FoldingModes(object):
