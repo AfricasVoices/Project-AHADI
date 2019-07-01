@@ -218,4 +218,4 @@ class AnalysisFile(object):
         with open(csv_by_individual_output_path, "w") as f:
             TracedDataCSVIO.export_traced_data_iterable_to_csv(folded_data, f, headers=export_keys)
 
-        return data
+        return data, folded_data
