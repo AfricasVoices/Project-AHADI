@@ -58,7 +58,8 @@
     "ProductionUploadPath": "ahadi_analysis_outputs/ahadi_s01_production.csv",
     "MessagesUploadPath": "ahadi_analysis_outputs/ahadi_s01_messages.csv",
     "IndividualsUploadPath": "ahadi_analysis_outputs/ahadi_s01_individuals.csv",
-    "TracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data.json"
+    "MessagesTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_messages.json",
+    "IndividualsTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_individuals.json"
   },
   "FlowDefinitionsUploadURLPrefix": "gs://avf-flow-definitions-test/AHADI-test-"
 }
