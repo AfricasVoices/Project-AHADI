@@ -152,6 +152,7 @@ class AnalysisFile(object):
                         analysis_dict[cc.analysis_file_key] = \
                             cc.code_scheme.get_code_with_id(td[cc.coded_field]["CodeID"]).string_value
                     else:
+                        assert cc.coding_mode == CodingModes.MULTIPLE
                         show_matrix_keys = []
                         for code in cc.code_scheme.codes:
                             show_matrix_keys.append(f"{cc.analysis_file_key}{code.string_value}")
