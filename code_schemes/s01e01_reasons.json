@@ -3,7 +3,166 @@
   "Name": "S01E01 Reasons",
   "Version": "0.0.0.1",
   "Codes": [
-
+    {
+      "CodeID": "code-f4e42345",
+      "CodeType": "Normal",
+      "DisplayText": "no, no development",
+      "NumericValue": 1,
+      "StringValue": "no_no_development",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-6439f534",
+      "CodeType": "Normal",
+      "DisplayText": "no, extensive corruption and poor leadership",
+      "NumericValue": 2,
+      "StringValue": "no_extensive_corruption_and_poor_leadership",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-1afdb24d",
+      "CodeType": "Normal",
+      "DisplayText": "no, high unemployment",
+      "NumericValue": 3,
+      "StringValue": "no_high_unemployment",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-d27f773d",
+      "CodeType": "Normal",
+      "DisplayText": "no, high insecurity",
+      "NumericValue": 4,
+      "StringValue": "no_high_insecurity",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-a8521dcd",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor infrastructure",
+      "NumericValue": 5,
+      "StringValue": "no_poor_infrastructure",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-f90c5b09",
+      "CodeType": "Normal",
+      "DisplayText": "no, lack access to water and sanitation",
+      "NumericValue": 6,
+      "StringValue": "no_lack_access_to_water_and_sanitation",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-af870d8e",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor health services",
+      "NumericValue": 7,
+      "StringValue": "no_poor_health_services",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-3b544139",
+      "CodeType": "Normal",
+      "DisplayText": "no, lack of support to agriculture",
+      "NumericValue": 8,
+      "StringValue": "no_lack_of_support_to_agriculture",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-38bf7509",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor prioritisation of projects",
+      "NumericValue": 9,
+      "StringValue": "no_poor_prioritisation_of_projects",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-52e2cacc",
+      "CodeType": "Normal",
+      "DisplayText": "no, lack of public participation",
+      "NumericValue": 10,
+      "StringValue": "no_lack_of_public_participation",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-62f65e2b",
+      "CodeType": "Normal",
+      "DisplayText": "no, other",
+      "NumericValue": 11,
+      "StringValue": "no_other",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-4974ae7d",
+      "CodeType": "Normal",
+      "DisplayText": "yes, improvement in infrastructure e.g. roads, electricity supply",
+      "NumericValue": 12,
+      "StringValue": "yes_improvement_in_infrastructure",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-a437942d",
+      "CodeType": "Normal",
+      "DisplayText": "yes, improvement in the education sector",
+      "NumericValue": 13,
+      "StringValue": "yes_improvement_in_the_education_sector",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-e99a1de5",
+      "CodeType": "Normal",
+      "DisplayText": "yes, openness in award of tenders to youth and women",
+      "NumericValue": 14,
+      "StringValue": "yes_openness_in_award_of_tenders_to_youth_and_women",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-b32e4f25",
+      "CodeType": "Normal",
+      "DisplayText": "yes, good infrastructure e.g. roads",
+      "NumericValue": 15,
+      "StringValue": "yes_good_infrastructure",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-a5b90226",
+      "CodeType": "Normal",
+      "DisplayText": "yes, reduced corruption incidences",
+      "NumericValue": 16,
+      "StringValue": "yes_reduced_corruption_incidences",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-70e972ab",
+      "CodeType": "Normal",
+      "DisplayText": "yes, improved security",
+      "NumericValue": 17,
+      "StringValue": "yes_improved_security",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-e00e075c",
+      "CodeType": "Normal",
+      "DisplayText": "yes, other",
+      "NumericValue": 18,
+      "StringValue": "yes_other",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-01fdda70",
+      "CodeType": "Normal",
+      "DisplayText": "any relevant question",
+      "NumericValue": 19,
+      "StringValue": "any_relevant_question",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-23ea833a",
+      "CodeType": "Normal",
+      "DisplayText": "other",
+      "NumericValue": 20,
+      "StringValue": "other",
+      "VisibleInCoda": true
+    },
     {
       "CodeID": "code-NA-f93d3eb7",
       "CodeType": "Control",
