@@ -93,7 +93,7 @@ class PipelineConfiguration(object):
                    coding_configurations=[
                        CodingConfiguration(
                            coding_mode=CodingModes.MULTIPLE,
-                           code_scheme=CodeSchemes.S01E02_REASONS,
+                           code_scheme=CodeSchemes.S01E03_REASONS,
                            coded_field="rqa_s01e03_coded",
                            analysis_file_key="rqa_s01e03_",
                            folding_mode=FoldingModes.MATRIX
@@ -109,7 +109,7 @@ class PipelineConfiguration(object):
                    coding_configurations=[
                        CodingConfiguration(
                            coding_mode=CodingModes.MULTIPLE,
-                           code_scheme=CodeSchemes.S01E01_REASONS,
+                           code_scheme=CodeSchemes.S01E04_REASONS,
                            coded_field="rqa_s01e04_coded",
                            analysis_file_key="rqa_s01e04_",
                            folding_mode=FoldingModes.MATRIX
