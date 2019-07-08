@@ -19,7 +19,7 @@ cd "$CODA_V2_DIRECTORY"
 if ! [ -d .git ]; then
     git clone "$CODA_V2_REPO" .
     cd data_tools
-    pipenv --three && pipenv update  # TODO: Change to 'sync' once the corrupted Pipfile.lock in CodaV2 is fixed.
+    pipenv --three && pipenv sync
 fi
 
 # Check that this repository is connected to the correct remote.
