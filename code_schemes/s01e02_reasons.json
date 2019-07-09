@@ -3,7 +3,118 @@
   "Name": "S01E02 Reasons",
   "Version": "0.0.0.1",
   "Codes": [
-
+    {
+      "CodeID": "code-b34b4677",
+      "CodeType": "Normal",
+      "DisplayText": "no, no projects implemented",
+      "NumericValue": 1,
+      "StringValue": "no_no_projects_implemented",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-c430d94d",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor supply and distribution",
+      "NumericValue": 2,
+      "StringValue": "no_poor_supply_and_distribution",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-2c5d3f97",
+      "CodeType": "Normal",
+      "DisplayText": "no, old/dilapidated infrastructure",
+      "NumericValue": 3,
+      "StringValue": "no_old_dilapidated_infrastructure",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-b3f8199d",
+      "CodeType": "Normal",
+      "DisplayText": "no, high cost of water/inflated bills",
+      "NumericValue": 4,
+      "StringValue": "no_high_cost_of_water_inflated_bills",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-973bd750",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor quality of water",
+      "NumericValue": 5,
+      "StringValue": "no_poor_quality_of_water",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-cc5226e9",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor sanitation and hygiene facilities",
+      "NumericValue": 6,
+      "StringValue": "no_poor_sanitation_and_hygiene_facilities",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-3e7114ee",
+      "CodeType": "Normal",
+      "DisplayText": "no, corruption/mismanagement",
+      "NumericValue": 7,
+      "StringValue": "no_corruption_mismanagement",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-6716ffcd",
+      "CodeType": "Normal",
+      "DisplayText": "no, incomplete/abandoned projects",
+      "NumericValue": 8,
+      "StringValue": "no_incomplete_abandoned_projects",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-5cfd8bbe",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor monitoring and inspection of projects",
+      "NumericValue": 9,
+      "StringValue": "no_poor_monitoring_and_inspection_of_projects",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-9e6e1e45",
+      "CodeType": "Normal",
+      "DisplayText": "no, lack of support to other sectors e.g. agriculture, livestock",
+      "NumericValue": 10,
+      "StringValue": "no_lack_of_support_to_other_sectors",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-25d5cdf9",
+      "CodeType": "Normal",
+      "DisplayText": "no, other",
+      "NumericValue": 11,
+      "StringValue": "no_other",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-c7fe9206",
+      "CodeType": "Normal",
+      "DisplayText": "yes, improved service",
+      "NumericValue": 12,
+      "StringValue": "yes_improved_service",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-fe9def33",
+      "CodeType": "Normal",
+      "DisplayText": "yes, other",
+      "NumericValue": 13,
+      "StringValue": "yes_other",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-27875192",
+      "CodeType": "Normal",
+      "DisplayText": "questions on water services",
+      "NumericValue": 14,
+      "StringValue": "questions_on_water_services",
+      "VisibleInCoda": true
+    },
     {
       "CodeID": "code-NA-f93d3eb7",
       "CodeType": "Control",
@@ -78,4 +189,3 @@
     }
   ]
 }
-
