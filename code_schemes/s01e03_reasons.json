@@ -3,7 +3,102 @@
   "Name": "S01E03 Reasons",
   "Version": "0.0.0.1",
   "Codes": [
-
+    {
+      "CodeID": "code-1540809e",
+      "CodeType": "Normal",
+      "DisplayText": "no, no improvement in service delivery",
+      "NumericValue": 1,
+      "StringValue": "no_no_improvement_in_service_delivery",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-7a3bfd87",
+      "CodeType": "Normal",
+      "DisplayText": "no, inadequate personnel/HRH",
+      "NumericValue": 2,
+      "StringValue": "no_inadequate_personnel_HRH",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-eef267e3",
+      "CodeType": "Normal",
+      "DisplayText": "no, no drugs/equipment",
+      "NumericValue": 3,
+      "StringValue": "no_no_drugs_equipment",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-2a76be8e",
+      "CodeType": "Normal",
+      "DisplayText": "no, high cost of health services",
+      "NumericValue": 4,
+      "StringValue": "no_high_cost_of_health_services",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-ae3b46d5",
+      "CodeType": "Normal",
+      "DisplayText": "no, corruption/mismanagement",
+      "NumericValue": 5,
+      "StringValue": "no_corruption_mismanagement",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-0d08959c",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor prioritization of projects",
+      "NumericValue": 6,
+      "StringValue": "no_poor_prioritization_of_projects",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-62c1bd77",
+      "CodeType": "Normal",
+      "DisplayText": "no, inadequate public participation",
+      "NumericValue": 7,
+      "StringValue": "no_inadequate_public_participation",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-e81465ba",
+      "CodeType": "Normal",
+      "DisplayText": "no, others",
+      "NumericValue": 8,
+      "StringValue": "no_others",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-6b6d82b8",
+      "CodeType": "Normal",
+      "DisplayText": "yes, improved services",
+      "NumericValue": 9,
+      "StringValue": "yes_improved_services",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-341f5b39",
+      "CodeType": "Normal",
+      "DisplayText": "questions on health services",
+      "NumericValue": 10,
+      "StringValue": "questions_on_health_services",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-6a59a041",
+      "CodeType": "Normal",
+      "DisplayText": "infrastructure",
+      "NumericValue": 11,
+      "StringValue": "infrastructure",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-37118f44",
+      "CodeType": "Normal",
+      "DisplayText": "education and youth",
+      "NumericValue": 12,
+      "StringValue": "education_and_youth",
+      "VisibleInCoda": true
+    },
     {
       "CodeID": "code-NA-f93d3eb7",
       "CodeType": "Control",
