@@ -10,6 +10,10 @@ while [[ $# -gt 0 ]]; do
             PROFILE_CPU=true
             CPU_PROFILE_OUTPUT_PATH="$2"
             shift 2;;
+        --profile-memory)
+            PROFILE_MEMORY=true
+            MEMORY_PROFILE_OUTPUT_PATH="$2"
+            shift 2;;
         --)
             shift
             break;;
@@ -22,7 +26,7 @@ done
 # Check that the correct number of arguments were provided.
 if [[ $# -ne 12 ]]; then
     echo "Usage: ./docker-run.sh
-    [--profile-cpu <profile-output-path>]
+    [--profile-cpu <profile-output-path>] [--profile-memory <profile-output-path>]
     <user> <google-cloud-credentials-file-path> <pipeline-configuration-file-path>
     <raw-data-dir> <prev-coded-dir> <messages-json-output-path> <individuals-json-output-path>
     <icr-output-dir> <coded-output-dir> <messages-output-csv> <individuals-output-csv> <production-output-csv>"
@@ -44,18 +48,21 @@ OUTPUT_INDIVIDUALS_CSV=${11}
 OUTPUT_PRODUCTION_CSV=${12}
 
 # Build an image for this pipeline stage.
-docker build --build-arg INSTALL_CPU_PROFILER="$PROFILE_CPU" -t "$IMAGE_NAME" .
+docker build --build-arg INSTALL_CPU_PROFILER="$PROFILE_CPU" --build-arg INSTALL_MEMORY_PROFILER="$PROFILE_MEMORY" -t "$IMAGE_NAME" .
 
 # Create a container from the image that was just built.
 if [[ "$PROFILE_CPU" = true ]]; then
     PROFILE_CPU_CMD="pyflame -o /data/cpu.prof -t"
     SYS_PTRACE_CAPABILITY="--cap-add SYS_PTRACE"
 fi
-CMD="pipenv run $PROFILE_CPU_CMD python -u generate_outputs.py \
+if [[ "$PROFILE_MEMORY" = true ]]; then
+    PROFILE_MEMORY_CMD="mprof run -o /data/memory.prof"
+fi
+CMD="pipenv run $PROFILE_CPU_CMD $PROFILE_MEMORY_CMD python -u generate_outputs.py \
     \"$USER\" /credentials/google-cloud-credentials.json /data/pipeline_configuration.json \
     /data/raw-data /data/prev-coded \
     /data/output-messages.json /data/output-individuals.json /data/output-icr /data/coded \
-    /data/output-messages.csv /data/output-individuals.csv /data/output-production.csv \
+    /data/output-messages.csv /data/output-individuals.csv /data/output-production.csv
 "
 container="$(docker container create ${SYS_PTRACE_CAPABILITY} -w /app "$IMAGE_NAME" /bin/bash -c "$CMD")"
 
@@ -95,6 +102,11 @@ docker cp "$container:/data/output-individuals.csv" "$OUTPUT_INDIVIDUALS_CSV"
 if [[ "$PROFILE_CPU" = true ]]; then
     mkdir -p "$(dirname "$CPU_PROFILE_OUTPUT_PATH")"
     docker cp "$container:/data/cpu.prof" "$CPU_PROFILE_OUTPUT_PATH"
+fi
+
+if [[ "$PROFILE_MEMORY" = true ]]; then
+    mkdir -p "$(dirname "$MEMORY_PROFILE_OUTPUT_PATH")"
+    docker cp "$container:/data/memory.prof" "$MEMORY_PROFILE_OUTPUT_PATH"
 fi
 
 # Tear down the container, now that all expected output files have been copied out successfully
