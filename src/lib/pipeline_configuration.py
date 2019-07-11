@@ -2,47 +2,49 @@ import json
 from urllib.parse import urlparse
 
 from core_data_modules.cleaners import Codes, swahili
-from core_data_modules.data_models import Scheme, validators
+from core_data_modules.data_models import validators
 from dateutil.parser import isoparse
 
-
-def _open_scheme(filename):
-    with open(f"code_schemes/{filename}", "r") as f:
-        firebase_map = json.load(f)
-        return Scheme.from_firebase_map(firebase_map)
+from src.lib import code_imputation_functions
+from src.lib.code_schemes import CodeSchemes
 
 
-class CodeSchemes(object):
-    S01E01_REASONS = _open_scheme("s01e01_reasons.json")
-    S01E02_REASONS = _open_scheme("s01e02_reasons.json")
-    S01E03_REASONS = _open_scheme("s01e03_reasons.json")
-    S01E04_REASONS = _open_scheme("s01e04_reasons.json")
+class CodingModes(object):
+    SINGLE = "SINGLE"
+    MULTIPLE = "MULTIPLE"
+    
 
-    CONSTITUENCY = _open_scheme("constituency.json")
-    COUNTY = _open_scheme("county.json")
-    GENDER = _open_scheme("gender.json")
-    AGE = _open_scheme("age.json")
-    LIVELIHOOD = _open_scheme("livelihood.json")
-
-    # WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
+class FoldingModes(object):
+    ASSERT_EQUAL = "ASSERT_EQUAL"
+    YES_NO_AMB = "YES_NO_AMB"
+    CONCATENATE = "CONCATENATE"
+    MATRIX = "MATRIX"
 
 
-class CodingPlan(object):
-    def __init__(self, raw_field, coded_field, coda_filename, cleaner=None, code_scheme=None, time_field=None,
-                 run_id_field=None, icr_filename=None, analysis_file_key=None, id_field=None,
-                 binary_code_scheme=None, binary_coded_field=None, binary_analysis_file_key=None):
-        self.raw_field = raw_field
-        self.coded_field = coded_field
-        self.coda_filename = coda_filename
-        self.icr_filename = icr_filename
-        self.cleaner = cleaner
+class CodingConfiguration(object):
+    def __init__(self, coding_mode, code_scheme, coded_field, analysis_file_key, folding_mode, cleaner=None):
+        assert coding_mode in {CodingModes.SINGLE, CodingModes.MULTIPLE}
+
+        self.coding_mode = coding_mode
         self.code_scheme = code_scheme
+        self.coded_field = coded_field
+        self.analysis_file_key = analysis_file_key
+        self.folding_mode = folding_mode
+        self.cleaner = cleaner
+
+
+# TODO: Rename CodingPlan to something like DatasetConfiguration?
+class CodingPlan(object):
+    def __init__(self, raw_field, coda_filename, coding_configurations, raw_field_folding_mode, time_field=None,
+                 run_id_field=None, icr_filename=None, id_field=None, code_imputation_function=None):
+        self.raw_field = raw_field
         self.time_field = time_field
         self.run_id_field = run_id_field
-        self.analysis_file_key = analysis_file_key
-        self.binary_code_scheme = binary_code_scheme
-        self.binary_coded_field = binary_coded_field
-        self.binary_analysis_file_key = binary_analysis_file_key
+        self.coda_filename = coda_filename
+        self.icr_filename = icr_filename
+        self.coding_configurations = coding_configurations
+        self.code_imputation_function = code_imputation_function
+        self.raw_field_folding_mode = raw_field_folding_mode
 
         if id_field is None:
             id_field = "{}_id".format(self.raw_field)
@@ -52,40 +54,68 @@ class CodingPlan(object):
 class PipelineConfiguration(object):
     RQA_CODING_PLANS = [
         CodingPlan(raw_field="rqa_s01e01_raw",
-                   coded_field="rqa_s01e01_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e01_run_id",
                    coda_filename="s01e01.json",
                    icr_filename="s01e01.csv",
-                   run_id_field="rqa_s01e01_run_id",
-                   analysis_file_key="rqa_s01e01_",
-                   code_scheme=CodeSchemes.S01E01_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E01_REASONS,
+                           coded_field="rqa_s01e01_coded",
+                           analysis_file_key="rqa_s01e01_",
+                           folding_mode=FoldingModes.MATRIX
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e02_raw",
-                   coded_field="rqa_s01e02_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e02_run_id",
                    coda_filename="s01e02.json",
                    icr_filename="s01e02.csv",
-                   run_id_field="rqa_s01e02_run_id",
-                   analysis_file_key="rqa_s01e02_",
-                   code_scheme=CodeSchemes.S01E02_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E02_REASONS,
+                           coded_field="rqa_s01e02_coded",
+                           analysis_file_key="rqa_s01e02_",
+                           folding_mode=FoldingModes.MATRIX
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e03_raw",
-                   coded_field="rqa_s01e03_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e03_run_id",
                    coda_filename="s01e03.json",
                    icr_filename="s01e03.csv",
-                   run_id_field="rqa_s01e03_run_id",
-                   analysis_file_key="rqa_s01e03_",
-                   code_scheme=CodeSchemes.S01E03_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E03_REASONS,
+                           coded_field="rqa_s01e03_coded",
+                           analysis_file_key="rqa_s01e03_",
+                           folding_mode=FoldingModes.MATRIX
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e04_raw",
-                   coded_field="rqa_s01e04_coded",
                    time_field="sent_on",
+                   run_id_field="rqa_s01e04_run_id",
                    coda_filename="s01e04.json",
                    icr_filename="s01e04.csv",
-                   run_id_field="rqa_s01e04_run_id",
-                   analysis_file_key="rqa_s01e04_",
-                   code_scheme=CodeSchemes.S01E04_REASONS),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.MULTIPLE,
+                           code_scheme=CodeSchemes.S01E04_REASONS,
+                           coded_field="rqa_s01e04_coded",
+                           analysis_file_key="rqa_s01e04_",
+                           folding_mode=FoldingModes.MATRIX
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.CONCATENATE),
     ]
 
     @staticmethod
@@ -101,48 +131,73 @@ class PipelineConfiguration(object):
         else:
             return Codes.NOT_CODED
 
-    LOCATION_CODING_PLANS = [
+    SURVEY_CODING_PLANS = [
         CodingPlan(raw_field="location_raw",
-                   coded_field="constituency_coded",
                    time_field="location_time",
                    coda_filename="location.json",
-                   analysis_file_key="constituency",
-                   code_scheme=CodeSchemes.CONSTITUENCY),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.CONSTITUENCY,
+                           coded_field="constituency_coded",
+                           analysis_file_key="constituency",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       ),
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.COUNTY,
+                           coded_field="county_coded",
+                           analysis_file_key="county",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   code_imputation_function=code_imputation_functions.impute_kenya_location_codes,
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
-        CodingPlan(raw_field="location_raw",
-                   coded_field="county_coded",
-                   time_field="location_time",
-                   coda_filename="location.json",
-                   analysis_file_key="county",
-                   code_scheme=CodeSchemes.COUNTY)
-    ]
-
-    SURVEY_CODING_PLANS = []
-    SURVEY_CODING_PLANS.extend(LOCATION_CODING_PLANS)
-    SURVEY_CODING_PLANS.extend([
         CodingPlan(raw_field="gender_raw",
-                   coded_field="gender_coded",
                    time_field="gender_time",
                    coda_filename="gender.json",
-                   analysis_file_key="gender",
-                   cleaner=swahili.DemographicCleaner.clean_gender,
-                   code_scheme=CodeSchemes.GENDER),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.GENDER,
+                           cleaner=swahili.DemographicCleaner.clean_gender,
+                           coded_field="gender_coded",
+                           analysis_file_key="gender",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="age_raw",
-                   coded_field="age_coded",
                    time_field="age_time",
                    coda_filename="age.json",
-                   analysis_file_key="age",
-                   cleaner=lambda text: PipelineConfiguration.clean_age_with_range_filter(text),
-                   code_scheme=CodeSchemes.AGE),
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.AGE,
+                           cleaner=lambda text: PipelineConfiguration.clean_age_with_range_filter(text),
+                           coded_field="age_coded",
+                           analysis_file_key="age",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="livelihood_raw",
-                   coded_field="livelihood_coded",
                    time_field="livelihood_time",
                    coda_filename="livelihood.json",
-                   analysis_file_key="livelihood",
-                   code_scheme=CodeSchemes.LIVELIHOOD)
-    ])
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.LIVELIHOOD,
+                           coded_field="livelihood_coded",
+                           analysis_file_key="livelihood",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL)
+    ]
 
     def __init__(self, rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,
                  rapid_pro_test_contact_uuids, phone_number_uuid_table, recovery_csv_urls, rapid_pro_key_remappings,

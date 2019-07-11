@@ -7,7 +7,8 @@ from core_data_modules.traced_data.io import TracedDataCSVIO
 from core_data_modules.traced_data.util import FoldTracedData
 from core_data_modules.util import TimeUtils
 
-from src.lib import PipelineConfiguration, AnalysisKeys
+from src.lib import PipelineConfiguration
+from src.lib.pipeline_configuration import CodingModes, FoldingModes
 
 
 class ConsentUtils(object):
@@ -26,8 +27,13 @@ class ConsentUtils(object):
         :rtype: bool
         """
         for plan in coding_plans:
-            if plan.code_scheme.get_code_with_id(td[plan.coded_field]["CodeID"]).control_code == Codes.STOP:
-                return True
+            for cc in plan.coding_configurations:
+                if cc.coding_mode == CodingModes.SINGLE:
+                    if cc.code_scheme.get_code_with_id(td[cc.coded_field]["CodeID"]).control_code == Codes.STOP:
+                        return True
+                else:
+                    if td[f"{cc.analysis_file_key}{Codes.STOP}"] == Codes.MATRIX_1:
+                        return True
         return False
 
     @classmethod
@@ -92,54 +98,10 @@ class AnalysisFile(object):
             td.append_data({consent_withdrawn_key: Codes.FALSE},
                            Metadata(user, Metadata.get_call_location(), time.time()))
 
-        # Set the list of raw/coded keys which
-        survey_keys = []
-        for plan in PipelineConfiguration.SURVEY_CODING_PLANS:
-            if plan.analysis_file_key is not None and plan.analysis_file_key not in survey_keys:
-                survey_keys.append(plan.analysis_file_key)
-            if plan.raw_field not in survey_keys:
-                survey_keys.append(plan.raw_field)
-
-        # Convert survey codes to their string values
-        for td in data:
-            td.append_data(
-                {plan.analysis_file_key: plan.code_scheme.get_code_with_id(td[plan.coded_field]["CodeID"]).string_value
-                 for plan in PipelineConfiguration.SURVEY_CODING_PLANS
-                 if plan.analysis_file_key is not None},
-                Metadata(user, Metadata.get_call_location(), time.time())
-            )
-
-        # Convert RQA binary codes to their string values
-        for td in data:
-            td.append_data(
-                {plan.binary_analysis_file_key:
-                 plan.binary_code_scheme.get_code_with_id(td[plan.binary_coded_field]["CodeID"]).string_value
-                 for plan in PipelineConfiguration.RQA_CODING_PLANS if plan.binary_code_scheme is not None},
-                Metadata(user, Metadata.get_call_location(), time.time())
-            )
-
-        # Translate the RQA reason codes to matrix values
-        matrix_keys = []
-
-        for plan in PipelineConfiguration.RQA_CODING_PLANS:
-            show_matrix_keys = list()
-            for code in plan.code_scheme.codes:
-                show_matrix_keys.append(f"{plan.analysis_file_key}{code.string_value}")
-
-            AnalysisKeys.set_matrix_keys(
-                user, data, show_matrix_keys, plan.code_scheme, plan.coded_field, plan.analysis_file_key)
-
-            matrix_keys.extend(show_matrix_keys)
-
-        binary_keys = [plan.binary_analysis_file_key
-                       for plan in PipelineConfiguration.RQA_CODING_PLANS
-                       if plan.binary_analysis_file_key is not None]
-
-        equal_keys = ["uid"]
-        equal_keys.extend(survey_keys)
-        concat_keys = [plan.raw_field for plan in PipelineConfiguration.RQA_CODING_PLANS]
+        # Set the list of keys to be exported and how they are to be handled when folding
+        export_keys = ["uid", consent_withdrawn_key]
         bool_keys = [
-            consent_withdrawn_key,
+            consent_withdrawn_key
 
             # "sms_ad",
             # "radio_promo",
@@ -152,31 +114,64 @@ class AnalysisFile(object):
             # "radio_participation_s02e05",
             # "radio_participation_s02e06",
         ]
+        equal_keys = ["uid"]
+        concat_keys = []
+        matrix_keys = []
+        binary_keys = []
+        for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
+            for cc in plan.coding_configurations:
+                if cc.coding_mode == CodingModes.SINGLE:
+                    export_keys.append(cc.analysis_file_key)
 
-        # Export to CSV
-        export_keys = ["uid"]
-        export_keys.extend(bool_keys)
-        export_keys.extend(matrix_keys)
-        export_keys.extend(binary_keys)
-        export_keys.extend(concat_keys)
-        export_keys.extend(survey_keys)
+                    if cc.folding_mode == FoldingModes.ASSERT_EQUAL:
+                        equal_keys.append(cc.analysis_file_key)
+                    elif cc.folding_mode == FoldingModes.YES_NO_AMB:
+                        binary_keys.append(cc.analysis_file_key)
+                    else:
+                        assert False, f"Incompatible folding_mode {plan.folding_mode}"
+                else:
+                    assert cc.folding_mode == FoldingModes.MATRIX
+                    for code in cc.code_scheme.codes:
+                        export_keys.append(f"{cc.analysis_file_key}{code.string_value}")
+                        matrix_keys.append(f"{cc.analysis_file_key}{code.string_value}")
+
+            export_keys.append(plan.raw_field)
+            if plan.raw_field_folding_mode == FoldingModes.CONCATENATE:
+                concat_keys.append(plan.raw_field)
+            elif plan.raw_field_folding_mode == FoldingModes.ASSERT_EQUAL:
+                equal_keys.append(plan.raw_field)
+            else:
+                assert False, f"Incompatible raw_field_folding_mode {plan.raw_field_folding_mode}"
+
+        # Convert codes to their string/matrix values
+        for td in data:
+            analysis_dict = dict()
+            for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
+                for cc in plan.coding_configurations:
+                    if cc.coding_mode == CodingModes.SINGLE:
+                        analysis_dict[cc.analysis_file_key] = \
+                            cc.code_scheme.get_code_with_id(td[cc.coded_field]["CodeID"]).string_value
+                    else:
+                        assert cc.coding_mode == CodingModes.MULTIPLE
+                        show_matrix_keys = []
+                        for code in cc.code_scheme.codes:
+                            show_matrix_keys.append(f"{cc.analysis_file_key}{code.string_value}")
+
+                        for label in td.get(cc.coded_field, []):
+                            code_string_value = cc.code_scheme.get_code_with_id(label['CodeID']).string_value
+                            analysis_dict[f"{cc.analysis_file_key}{code_string_value}"] = Codes.MATRIX_1
+
+                        for key in show_matrix_keys:
+                            if key not in analysis_dict:
+                                analysis_dict[key] = Codes.MATRIX_0
+            td.append_data(analysis_dict,
+                           Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string()))
 
         # Set consent withdrawn based on presence of data coded as "stop"
         ConsentUtils.determine_consent_withdrawn(
-            user, data, PipelineConfiguration.SURVEY_CODING_PLANS, consent_withdrawn_key)
-
-        # Set consent withdrawn based on stop codes from radio question answers
-        for td in data:
-            for plan in PipelineConfiguration.RQA_CODING_PLANS:
-                if td[f"{plan.analysis_file_key}{Codes.STOP}"] == Codes.MATRIX_1:
-                    td.append_data({consent_withdrawn_key: Codes.TRUE},
-                                   Metadata(user, Metadata.get_call_location(), time.time()))
-
-                if plan.binary_code_scheme is not None:
-                    if td[plan.binary_coded_field]["CodeID"] == \
-                            plan.binary_code_scheme.get_code_with_control_code(Codes.STOP).code_id:
-                        td.append_data({consent_withdrawn_key: Codes.TRUE},
-                                       Metadata(user, Metadata.get_call_location(), time.time()))
+            user, data, PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS,
+            consent_withdrawn_key
+        )
 
         # Fold data to have one respondent per row
         to_be_folded = []
@@ -193,19 +188,21 @@ class AnalysisFile(object):
         # FoldTracedData.fold_iterable_of_traced_data when there are multiple radio shows
         # TODO: Update FoldTracedData to handle NA and NC correctly under multiple radio shows
         for td in folded_data:
-            for plan in PipelineConfiguration.RQA_CODING_PLANS:
-                if td.get(plan.raw_field, "") != "":
-                    td.append_data({f"{plan.analysis_file_key}{Codes.TRUE_MISSING}": Codes.MATRIX_0},
-                                   Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string()))
+            for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
+                for cc in plan.coding_configurations:
+                    if cc.coding_mode == CodingModes.MULTIPLE:
+                        if td.get(plan.raw_field, "") != "":
+                            td.append_data({f"{cc.analysis_file_key}{Codes.TRUE_MISSING}": Codes.MATRIX_0},
+                                           Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string()))
 
-                contains_non_nc_key = False
-                for key in matrix_keys:
-                    if key.startswith(plan.analysis_file_key) and not key.endswith(Codes.NOT_CODED) \
-                            and td.get(key) == Codes.MATRIX_1:
-                        contains_non_nc_key = True
-                if not contains_non_nc_key:
-                    td.append_data({f"{plan.analysis_file_key}{Codes.NOT_CODED}": Codes.MATRIX_1},
-                                   Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string()))
+                        contains_non_nc_key = False
+                        for key in matrix_keys:
+                            if key.startswith(cc.analysis_file_key) and not key.endswith(Codes.NOT_CODED) \
+                                    and td.get(key) == Codes.MATRIX_1:
+                                contains_non_nc_key = True
+                        if not contains_non_nc_key:
+                            td.append_data({f"{cc.analysis_file_key}{Codes.NOT_CODED}": Codes.MATRIX_1},
+                                           Metadata(user, Metadata.get_call_location(), TimeUtils.utc_now_as_iso_string()))
 
         # Process consent
         ConsentUtils.set_stopped(user, data, consent_withdrawn_key, additional_keys=export_keys)
