@@ -1,7 +1,6 @@
 import argparse
 import json
 import os
-
 from core_data_modules.logging import Logger
 from core_data_modules.traced_data.io import TracedDataJsonIO
 from core_data_modules.util import IOUtils
@@ -87,21 +86,21 @@ if __name__ == "__main__":
     # Load messages
     messages_datasets = []
     for i, activation_flow_name in enumerate(pipeline_configuration.activation_flow_names):
-        raw_activation_path = f"{raw_data_dir}/{activation_flow_name}.json"
+        raw_activation_path = f"{raw_data_dir}/{activation_flow_name}.jsonl"
         log.info(f"Loading {raw_activation_path}...")
         with open(raw_activation_path, "r") as f:
-            messages = TracedDataJsonIO.import_json_to_traced_data_iterable(f)
-        log.info(f"Loaded {len(messages)} messages")
+            messages = TracedDataJsonIO.import_jsonl_to_traced_data_iterable(f)
+        log.info(f"Loaded {len(messages)} runs")
         messages_datasets.append(messages)
 
     log.info("Loading surveys datasets:")
     surveys_datasets = []
     for i, survey_flow_name in enumerate(pipeline_configuration.survey_flow_names):
-        raw_survey_path = f"{raw_data_dir}/{survey_flow_name}.json"
+        raw_survey_path = f"{raw_data_dir}/{survey_flow_name}.jsonl"
         log.info(f"Loading {raw_survey_path}...")
         with open(raw_survey_path, "r") as f:
-            contacts = TracedDataJsonIO.import_json_to_traced_data_iterable(f)
-        log.info(f"Loaded {len(contacts)} contacts")
+            contacts = TracedDataJsonIO.import_jsonl_to_traced_data_iterable(f)
+        log.info(f"Loaded {len(contacts)} runs")
         surveys_datasets.append(contacts)
 
     # Add survey data to the messages
@@ -133,12 +132,12 @@ if __name__ == "__main__":
     log.info("Writing messages TracedData to file...")
     IOUtils.ensure_dirs_exist_for_file(messages_json_output_path)
     with open(messages_json_output_path, "w") as f:
-        TracedDataJsonIO.export_traced_data_iterable_to_json(messages_data, f, pretty_print=True)
+        TracedDataJsonIO.export_traced_data_iterable_to_jsonl(messages_data, f)
 
     log.info("Writing individuals TracedData to file...")
     IOUtils.ensure_dirs_exist_for_file(individuals_json_output_path)
     with open(individuals_json_output_path, "w") as f:
-        TracedDataJsonIO.export_traced_data_iterable_to_json(individuals_data, f, pretty_print=True)
+        TracedDataJsonIO.export_traced_data_iterable_to_jsonl(individuals_data, f)
 
     # Upload to Google Drive, if requested.
     # Note: This should happen as late as possible in order to reduce the risk of the remainder of the pipeline failing
