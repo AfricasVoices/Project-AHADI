@@ -26,10 +26,10 @@
   "RapidProKeyRemappings": [
     {"RapidProKey": "avf_phone_id", "PipelineKey": "uid"},
 
-    {"RapidProKey": "Rqa_S01_E01 (Value) - ahadi_s01_e01_activation", "PipelineKey": "rqa_s01e01_raw", "IsActivationMessage": true},
-    {"RapidProKey": "Rqa_S01_E02 (Value) - ahadi_s01_e02_activation", "PipelineKey": "rqa_s01e02_raw", "IsActivationMessage": true},
-    {"RapidProKey": "Rqa_S01_E03 (Value) - ahadi_s01_e03_activation", "PipelineKey": "rqa_s01e03_raw", "IsActivationMessage": true},
-    {"RapidProKey": "Rqa_S01_E04 (Value) - ahadi_s01_e04_activation", "PipelineKey": "rqa_s01e04_raw", "IsActivationMessage": true},
+    {"RapidProKey": "Rqa_S01_E01 (Text) - ahadi_s01_e01_activation", "PipelineKey": "rqa_s01e01_raw", "IsActivationMessage": true},
+    {"RapidProKey": "Rqa_S01_E02 (Text) - ahadi_s01_e02_activation", "PipelineKey": "rqa_s01e02_raw", "IsActivationMessage": true},
+    {"RapidProKey": "Rqa_S01_E03 (Text) - ahadi_s01_e03_activation", "PipelineKey": "rqa_s01e03_raw", "IsActivationMessage": true},
+    {"RapidProKey": "Rqa_S01_E04 (Text) - ahadi_s01_e04_activation", "PipelineKey": "rqa_s01e04_raw", "IsActivationMessage": true},
 
     {"RapidProKey": "Rqa_S01_E01 (Run ID) - ahadi_s01_e01_activation", "PipelineKey": "rqa_s01e01_run_id"},
     {"RapidProKey": "Rqa_S01_E02 (Run ID) - ahadi_s01_e02_activation", "PipelineKey": "rqa_s01e02_run_id"},
@@ -41,13 +41,13 @@
     {"RapidProKey": "Rqa_S01_E03 (Time) - ahadi_s01_e03_activation", "PipelineKey": "sent_on"},
     {"RapidProKey": "Rqa_S01_E04 (Time) - ahadi_s01_e04_activation", "PipelineKey": "sent_on"},
 
-    {"RapidProKey": "Constituency (Value) - ahadi_demog", "PipelineKey": "location_raw"},
+    {"RapidProKey": "Constituency (Text) - ahadi_demog", "PipelineKey": "location_raw"},
     {"RapidProKey": "Constituency (Time) - ahadi_demog", "PipelineKey": "location_time"},
-    {"RapidProKey": "Gender (Value) - ahadi_demog", "PipelineKey": "gender_raw"},
+    {"RapidProKey": "Gender (Text) - ahadi_demog", "PipelineKey": "gender_raw"},
     {"RapidProKey": "Gender (Time) - ahadi_demog", "PipelineKey": "gender_time"},
-    {"RapidProKey": "Age (Value) - ahadi_demog", "PipelineKey": "age_raw"},
+    {"RapidProKey": "Age (Text) - ahadi_demog", "PipelineKey": "age_raw"},
     {"RapidProKey": "Age (Time) - ahadi_demog", "PipelineKey": "age_time"},
-    {"RapidProKey": "Livelihood (Value) - ahadi_demog", "PipelineKey": "livelihood_raw"},
+    {"RapidProKey": "Livelihood (Text) - ahadi_demog", "PipelineKey": "livelihood_raw"},
     {"RapidProKey": "Livelihood (Time) - ahadi_demog", "PipelineKey": "livelihood_time"}
   ],
   "ProjectStartDate": "2019-06-17T00:00:00+03:00",
