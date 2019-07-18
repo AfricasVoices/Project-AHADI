@@ -21,4 +21,4 @@ class CodeSchemes(object):
     AGE = _open_scheme("age.json")
     LIVELIHOOD = _open_scheme("livelihood.json")
 
-    # WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
+    WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
