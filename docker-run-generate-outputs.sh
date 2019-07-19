@@ -39,8 +39,8 @@ INPUT_GOOGLE_CLOUD_CREDENTIALS=$2
 INPUT_PIPELINE_CONFIGURATION=$3
 INPUT_RAW_DATA_DIR=$4
 PREV_CODED_DIR=$5
-OUTPUT_MESSAGES_JSON=$6
-OUTPUT_INDIVIDUALS_JSON=$7
+OUTPUT_MESSAGES_JSONL=$6
+OUTPUT_INDIVIDUALS_JSONL=$7
 OUTPUT_ICR_DIR=$8
 OUTPUT_CODED_DIR=$9
 OUTPUT_MESSAGES_CSV=${10}
@@ -61,7 +61,7 @@ fi
 CMD="pipenv run $PROFILE_CPU_CMD $PROFILE_MEMORY_CMD python -u generate_outputs.py \
     \"$USER\" /credentials/google-cloud-credentials.json /data/pipeline_configuration.json \
     /data/raw-data /data/prev-coded \
-    /data/output-messages.json /data/output-individuals.json /data/output-icr /data/coded \
+    /data/output-messages.jsonl /data/output-individuals.jsonl /data/output-icr /data/coded \
     /data/output-messages.csv /data/output-individuals.csv /data/output-production.csv
 "
 container="$(docker container create ${SYS_PTRACE_CAPABILITY} -w /app "$IMAGE_NAME" /bin/bash -c "$CMD")"
@@ -78,11 +78,11 @@ fi
 docker start -a -i "$container"
 
 # Copy the output data back out of the container
-mkdir -p "$(dirname "$OUTPUT_MESSAGES_JSON")"
-docker cp "$container:/data/output-messages.json" "$OUTPUT_MESSAGES_JSON"
+mkdir -p "$(dirname "$OUTPUT_MESSAGES_JSONL")"
+docker cp "$container:/data/output-messages.jsonl" "$OUTPUT_MESSAGES_JSONL"
 
-mkdir -p "$(dirname "$OUTPUT_INDIVIDUALS_JSON")"
-docker cp "$container:/data/output-individuals.json" "$OUTPUT_INDIVIDUALS_JSON"
+mkdir -p "$(dirname "$OUTPUT_INDIVIDUALS_JSONL")"
+docker cp "$container:/data/output-individuals.jsonl" "$OUTPUT_INDIVIDUALS_JSONL"
 
 mkdir -p "$OUTPUT_ICR_DIR"
 docker cp "$container:/data/output-icr/." "$OUTPUT_ICR_DIR"
