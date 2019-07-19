@@ -55,8 +55,13 @@ class ConsentUtils(object):
         :param withdrawn_key: Name of key to use for the consent withdrawn field.
         :type withdrawn_key: str
         """
+        stopped_uids = set()
         for td in data:
             if cls.td_has_stop_code(td, coding_plans):
+                stopped_uids.add(td["uid"])
+
+        for td in data:
+            if td["uid"] in stopped_uids:
                 td.append_data(
                     {withdrawn_key: Codes.TRUE},
                     Metadata(user, Metadata.get_call_location(), time.time())
