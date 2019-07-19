@@ -3,7 +3,110 @@
   "Name": "S01E04 Reasons",
   "Version": "0.0.0.1",
   "Codes": [
-
+    {
+      "CodeID": "code-a4f1b8e0",
+      "CodeType": "Normal",
+      "DisplayText": "no, no public participation",
+      "NumericValue": 1,
+      "StringValue": "no_no_public_participation",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-13952592",
+      "CodeType": "Normal",
+      "DisplayText": "no, limited access to information",
+      "NumericValue": 2,
+      "StringValue": "no_limited_access_to_information",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-4e33a26c",
+      "CodeType": "Normal",
+      "DisplayText": "no, low awareness",
+      "NumericValue": 3,
+      "StringValue": "no_low_awareness",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-cccd072c",
+      "CodeType": "Normal",
+      "DisplayText": "no, no civic education",
+      "NumericValue": 4,
+      "StringValue": "no_no_civic_education",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-6ba8809a",
+      "CodeType": "Normal",
+      "DisplayText": "no, apathy and disillusionment",
+      "NumericValue": 5,
+      "StringValue": "no_apathy_and_disillusionment",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-4cfab45a",
+      "CodeType": "Normal",
+      "DisplayText": "no, poor implementation",
+      "NumericValue": 6,
+      "StringValue": "no_poor_implementation",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-e03c94c1",
+      "CodeType": "Normal",
+      "DisplayText": "no, marginalization on political affiliation",
+      "NumericValue": 7,
+      "StringValue": "no_marginalization_on_political_affiliation",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-bfb7f4c8",
+      "CodeType": "Normal",
+      "DisplayText": "marginalization of youth and PWDs",
+      "NumericValue": 8,
+      "StringValue": "marginalization_of_youth_and_PWDs",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-88b592cc",
+      "CodeType": "Normal",
+      "DisplayText": "yes, public participation done",
+      "NumericValue": 9,
+      "StringValue": "yes_public_participation_done",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-498d34e0",
+      "CodeType": "Normal",
+      "DisplayText": "yes, but increase the reach",
+      "NumericValue": 10,
+      "StringValue": "yes_but_increase_the_reach",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-f907fed4",
+      "CodeType": "Normal",
+      "DisplayText": "yes, but involve CSOs in surveillance of projects",
+      "NumericValue": 11,
+      "StringValue": "yes_but_involve_CSOs_in_surveillance_of_projects",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-49099100",
+      "CodeType": "Normal",
+      "DisplayText": "yes, but improve level of consultations",
+      "NumericValue": 12,
+      "StringValue": "yes_but_improve_level_of_consultations",
+      "VisibleInCoda": true
+    },
+    {
+      "CodeID": "code-eaf020c5",
+      "CodeType": "Normal",
+      "DisplayText": "questions on public participation",
+      "NumericValue": 13,
+      "StringValue": "questions_on_public_participation",
+      "VisibleInCoda": true
+    },
     {
       "CodeID": "code-NA-f93d3eb7",
       "CodeType": "Control",
