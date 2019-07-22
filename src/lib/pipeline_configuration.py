@@ -202,13 +202,13 @@ class PipelineConfiguration(object):
                    time_field="understanding_time",
                    coda_filename="understanding.json",
                    coding_configurations=[
-                       # CodingConfiguration(
-                       #     coding_mode=CodingModes.SINGLE,
-                       #     code_scheme=CodeSchemes.LIVELIHOOD,
-                       #     coded_field="understanding_coded",
-                       #     analysis_file_key="livelihood",
-                       #     folding_mode=FoldingModes.ASSERT_EQUAL
-                       # )
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.UNDERSTANDING,
+                           coded_field="understanding_coded",
+                           analysis_file_key="understanding",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
                    ],
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
@@ -216,13 +216,13 @@ class PipelineConfiguration(object):
                    time_field="inclusion_time",
                    coda_filename="inclusion.json",
                    coding_configurations=[
-                       # CodingConfiguration(
-                       #     coding_mode=CodingModes.SINGLE,
-                       #     code_scheme=CodeSchemes.LIVELIHOOD,
-                       #     coded_field="inclusion_coded",
-                       #     analysis_file_key="livelihood",
-                       #     folding_mode=FoldingModes.ASSERT_EQUAL
-                       # )
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.INCLUSION,
+                           coded_field="inclusion_coded",
+                           analysis_file_key="inclusion",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
                    ],
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
@@ -230,13 +230,13 @@ class PipelineConfiguration(object):
                    time_field="trust_time",
                    coda_filename="trust.json",
                    coding_configurations=[
-                       # CodingConfiguration(
-                       #     coding_mode=CodingModes.SINGLE,
-                       #     code_scheme=CodeSchemes.LIVELIHOOD,
-                       #     coded_field="trust_coded",
-                       #     analysis_file_key="livelihood",
-                       #     folding_mode=FoldingModes.ASSERT_EQUAL
-                       # )
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.TRUST,
+                           coded_field="trust_coded",
+                           analysis_file_key="trust",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
                    ],
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
@@ -244,13 +244,13 @@ class PipelineConfiguration(object):
                    time_field="positive_changes_time",
                    coda_filename="positive_changes.json",
                    coding_configurations=[
-                       # CodingConfiguration(
-                       #     coding_mode=CodingModes.SINGLE,
-                       #     code_scheme=CodeSchemes.LIVELIHOOD,
-                       #     coded_field="positive_changes_coded",
-                       #     analysis_file_key="livelihood",
-                       #     folding_mode=FoldingModes.ASSERT_EQUAL
-                       # )
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.POSITIVE_CHANGES,
+                           coded_field="positive_changes_coded",
+                           analysis_file_key="positive_changes",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
                    ],
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL)
     ]
