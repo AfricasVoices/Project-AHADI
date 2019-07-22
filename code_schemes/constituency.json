@@ -1,7 +1,7 @@
 {
     "SchemeID": "Scheme-4c5b955d",
     "Name": "Constituency",
-    "Version": "0.0.0.1",
+    "Version": "0.0.0.2",
     "Codes": [
         {
             "CodeID": "code-16b55d8a",
@@ -330,7 +330,7 @@
             "StringValue": "dagoretti_north",
             "VisibleInCoda": true,
             "MatchValues": [
-                "Dagoretti north"
+                "dagoretti north"
             ]
         },
         {
@@ -341,7 +341,7 @@
             "StringValue": "dagoretti_south",
             "VisibleInCoda": true,
             "MatchValues": [
-                "Dagoretti south"
+                "dagoretti south"
             ]
         },
         {
@@ -976,10 +976,10 @@
             "DisplayText": "gatanga",
             "CodeType": "Normal",
             "NumericValue": 14,
-            "StringValue": "Gatanga",
+            "StringValue": "gatanga",
             "VisibleInCoda": true,
             "MatchValues": [
-                "Gatanga"
+                "gatanga"
             ]
         },
         {
@@ -2810,13 +2810,13 @@
         },
         {
             "CodeID": "code-d2710982",
-            "DisplayText": "sigowet_sion",
+            "DisplayText": "sigowet sion",
             "CodeType": "Normal",
             "NumericValue": 197,
             "StringValue": "sigowet_sion",
             "VisibleInCoda": true,
             "MatchValues": [
-                "sigowet_sion"
+                "sigowet sion"
             ]
         },
         {
