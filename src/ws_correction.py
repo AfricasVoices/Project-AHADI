@@ -7,7 +7,7 @@ from core_data_modules.traced_data import Metadata
 from core_data_modules.traced_data.io import TracedDataCodaV2IO
 
 from src.lib import PipelineConfiguration
-from src.lib.pipeline_configuration import CodeSchemes
+from src.lib.pipeline_configuration import CodeSchemes, CodingModes
 
 log = Logger(__name__)
 
@@ -24,44 +24,42 @@ class WSCorrection(object):
     def move_wrong_scheme_messages(user, data, coda_input_dir):
         log.info("Importing manually coded Coda files to '_WS' fields...")
         for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
-            TracedDataCodaV2IO.compute_message_ids(user, data, plan.raw_field, plan.id_field + "_WS")
+            TracedDataCodaV2IO.compute_message_ids(user, data, plan.raw_field, f"{plan.id_field}_WS")
             with open(f"{coda_input_dir}/{plan.coda_filename}") as f:
                 TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
-                    user, data, plan.id_field + "_WS",
-                    {f"{plan.coded_field}_WS_correct_dataset": CodeSchemes.WS_CORRECT_DATASET}, f
+                    user, data, f"{plan.id_field}_WS",
+                    {f"{plan.raw_field}_WS_correct_dataset": CodeSchemes.WS_CORRECT_DATASET}, f
                 )
 
-        for plan in PipelineConfiguration.RQA_CODING_PLANS:
-            with open(f"{coda_input_dir}/{plan.coda_filename}") as f:
-                TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable_multi_coded(
-                    user, data, plan.id_field + "_WS",
-                    {f"{plan.coded_field}_WS": plan.code_scheme}, f
-                )
-
-                if plan.binary_code_scheme is not None:
-                    f.seek(0)
-                    TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
-                        user, data, plan.id_field + "_WS",
-                        {f"{plan.binary_coded_field}_WS": plan.binary_code_scheme}, f
-                    )
-
-        for plan in PipelineConfiguration.SURVEY_CODING_PLANS:
-            with open(f"{coda_input_dir}/{plan.coda_filename}") as f:
-                TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
-                    user, data, plan.id_field + "_WS",
-                    {f"{plan.coded_field}_WS": plan.code_scheme}, f
-                )
+            for cc in plan.coding_configurations:
+                with open(f"{coda_input_dir}/{plan.coda_filename}") as f:
+                    if cc.coding_mode == CodingModes.SINGLE:
+                        TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable(
+                            user, data, plan.id_field + "_WS",
+                            {f"{cc.coded_field}_WS": cc.code_scheme}, f
+                        )
+                    else:
+                        assert cc.coding_mode == CodingModes.MULTIPLE
+                        TracedDataCodaV2IO.import_coda_2_to_traced_data_iterable_multi_coded(
+                            user, data, f"{plan.id_field}_WS",
+                            {f"{cc.coded_field}_WS": cc.code_scheme}, f
+                        )
 
         log.info("Checking for WS Coding Errors...")
-        # Check for coding errors in the RQA datasets.
+        # Check for coding errors
+        # TODO: Test this by
         for td in data:
-            for plan in PipelineConfiguration.RQA_CODING_PLANS:
+            for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
                 rqa_codes = []
-                for label in td.get(f"{plan.coded_field}_WS", []):
-                    rqa_codes.append(plan.code_scheme.get_code_with_id(label["CodeID"]))
-                if plan.binary_code_scheme is not None and f"{plan.binary_coded_field}_WS" in td:
-                    label = td[f"{plan.binary_coded_field}_WS"]
-                    rqa_codes.append(plan.binary_code_scheme.get_code_with_id(label["CodeID"]))
+                for cc in plan.coding_configurations:
+                    if cc.coding_mode == CodingModes.SINGLE:
+                        if f"{cc.coded_field}_WS" in td:
+                            label = td[f"{cc.coded_field}_WS"]
+                            rqa_codes.append(cc.code_scheme.get_code_with_id(label["CodeID"]))
+                    else:
+                        assert cc.coding_mode == CodingModes.MULTIPLE
+                        for label in td.get(f"{cc.coded_field}_WS", []):
+                            rqa_codes.append(cc.code_scheme.get_code_with_id(label["CodeID"]))
 
                 has_ws_code_in_code_scheme = False
                 for code in rqa_codes:
@@ -69,14 +67,14 @@ class WSCorrection(object):
                         has_ws_code_in_code_scheme = True
 
                 has_ws_code_in_ws_scheme = False
-                if f"{plan.coded_field}_WS_correct_dataset" in td:
+                if f"{plan.raw_field}_WS_correct_dataset" in td:
                     has_ws_code_in_ws_scheme = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(
-                        td[f"{plan.coded_field}_WS_correct_dataset"]["CodeID"]).code_type == "Normal"
+                        td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"]).code_type == "Normal"
 
                 if has_ws_code_in_code_scheme != has_ws_code_in_ws_scheme:
                     log.debug(f"Coding Error: {plan.raw_field}: {td[plan.raw_field]}")
                     coding_error_dict = {
-                        f"{plan.coded_field}_WS_correct_dataset":
+                        f"{plan.raw_field}_WS_correct_dataset":
                             CleaningUtils.make_label_from_cleaner_code(
                                 CodeSchemes.WS_CORRECT_DATASET,
                                 CodeSchemes.WS_CORRECT_DATASET.get_code_with_control_code(Codes.CODING_ERROR),
@@ -84,66 +82,6 @@ class WSCorrection(object):
                             ).to_dict()
                     }
                     td.append_data(coding_error_dict, Metadata(user, Metadata.get_call_location(), time.time()))
-
-        # Check for coding errors in the surveys datasets, except location, as this is handled differently below.
-        for td in data:
-            for plan in PipelineConfiguration.SURVEY_CODING_PLANS:
-                if plan.raw_field == "location_raw":
-                    continue
-
-                has_ws_code_in_code_scheme = False
-                if f"{plan.coded_field}_WS" in td:
-                    has_ws_code_in_code_scheme = plan.code_scheme.get_code_with_id(
-                        td[f"{plan.coded_field}_WS"]["CodeID"]).control_code == Codes.WRONG_SCHEME
-
-                has_ws_code_in_ws_scheme = False
-                if f"{plan.coded_field}_WS_correct_dataset" in td:
-                    has_ws_code_in_ws_scheme = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(
-                        td[f"{plan.coded_field}_WS_correct_dataset"]["CodeID"]).code_type == "Normal"
-
-                if has_ws_code_in_code_scheme != has_ws_code_in_ws_scheme:
-                    log.debug(f"Coding Error: {plan.raw_field}: {td[plan.raw_field]}")
-                    coding_error_dict = {
-                        f"{plan.coded_field}_WS_correct_dataset":
-                            CleaningUtils.make_label_from_cleaner_code(
-                                CodeSchemes.WS_CORRECT_DATASET,
-                                CodeSchemes.WS_CORRECT_DATASET.get_code_with_control_code(Codes.CODING_ERROR),
-                                Metadata.get_call_location(),
-                            ).to_dict()
-                    }
-                    td.append_data(coding_error_dict, Metadata(user, Metadata.get_call_location(), time.time()))
-                    
-        # Check for coding errors in the locations dataset.
-        for td in data:
-            location_codes = []
-            for plan in PipelineConfiguration.LOCATION_CODING_PLANS:
-                if f"{plan.coded_field}_WS" in td:
-                    label = td[f"{plan.coded_field}_WS"]
-                    location_codes.append(plan.code_scheme.get_code_with_id(label["CodeID"]))
-
-            has_ws_code_in_code_scheme = False
-            for code in location_codes:
-                if code.control_code == Codes.WRONG_SCHEME:
-                    has_ws_code_in_code_scheme = True
-
-            has_ws_code_in_ws_scheme = False
-            for plan in PipelineConfiguration.LOCATION_CODING_PLANS:
-                if f"{plan.coded_field}_WS_correct_dataset" in td:
-                    if CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(
-                            td[f"{plan.coded_field}_WS_correct_dataset"]["CodeID"]).code_type == "Normal":
-                        has_ws_code_in_ws_scheme = True
-
-            if has_ws_code_in_code_scheme != has_ws_code_in_ws_scheme:
-                log.debug(f"Coding Error: location_raw: {td['location_raw']}")
-                coding_error_dict = dict()
-                for plan in PipelineConfiguration.LOCATION_CODING_PLANS:
-                    coding_error_dict[f"{plan.coded_field}_WS_correct_dataset"] = \
-                        CleaningUtils.make_label_from_cleaner_code(
-                            CodeSchemes.WS_CORRECT_DATASET,
-                            CodeSchemes.WS_CORRECT_DATASET.get_code_with_control_code(Codes.CODING_ERROR),
-                            Metadata.get_call_location(),
-                        ).to_dict()
-                td.append_data(coding_error_dict, Metadata(user, Metadata.get_call_location(), time.time()))
 
         # Construct a map from WS normal code id to the raw field that code indicates a requested move to.
         ws_code_to_raw_field_map = dict()
@@ -177,7 +115,7 @@ class WSCorrection(object):
             for plan in PipelineConfiguration.SURVEY_CODING_PLANS:
                 if plan.raw_field not in td:
                     continue
-                ws_code = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(td[f"{plan.coded_field}_WS_correct_dataset"]["CodeID"])
+                ws_code = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"])
                 if ws_code.code_type == "Normal":
                     log.debug(f"Detected redirect from {plan.raw_field} -> {ws_code_to_raw_field_map.get(ws_code.code_id, ws_code.code_id)} for message {td[plan.raw_field]}")
                     survey_moves[plan.raw_field] = ws_code_to_raw_field_map[ws_code.code_id]
@@ -188,7 +126,7 @@ class WSCorrection(object):
                 for plan in PipelineConfiguration.RQA_CODING_PLANS:
                     if plan.raw_field not in td:
                         continue
-                    ws_code = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(td[f"{plan.coded_field}_WS_correct_dataset"]["CodeID"])
+                    ws_code = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"])
                     if ws_code.code_type == "Normal":
                         log.debug(f"Detected redirect from ({i}, {plan.raw_field}) -> {ws_code_to_raw_field_map.get(ws_code.code_id, ws_code.code_id)} for message {td[plan.raw_field]}")
                         rqa_moves[(i, plan.raw_field)] = ws_code_to_raw_field_map[ws_code.code_id]
