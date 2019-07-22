@@ -25,6 +25,11 @@ DATASETS=(
     "gender"
     "age"
     "livelihood"
+
+    "understanding"
+    "inclusion"
+    "trust"
+    "positive_changes"
 )
 
 cd "$CODA_V2_ROOT/data_tools"
