@@ -47,7 +47,6 @@ class WSCorrection(object):
 
         log.info("Checking for WS Coding Errors...")
         # Check for coding errors
-        # TODO: Test this by
         for td in data:
             for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
                 rqa_codes = []
@@ -72,7 +71,7 @@ class WSCorrection(object):
                         td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"]).code_type == "Normal"
 
                 if has_ws_code_in_code_scheme != has_ws_code_in_ws_scheme:
-                    log.debug(f"Coding Error: {plan.raw_field}: {td[plan.raw_field]}")
+                    log.warning(f"Coding Error: {plan.raw_field}: {td[plan.raw_field]}")
                     coding_error_dict = {
                         f"{plan.raw_field}_WS_correct_dataset":
                             CleaningUtils.make_label_from_cleaner_code(
@@ -101,13 +100,6 @@ class WSCorrection(object):
         log.info("Performing WS correction...")
         corrected_data = []  # List of TracedData with the WS data moved.
         for group in data_grouped_by_uid.values():
-            log.debug(f"\n\nStarting re-map for {group[0]['uid']}...")
-            for i, td in enumerate(group):
-                log.debug(f"--------------td[{i}]--------------")
-                for _plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
-                    log.debug(f"{_plan.raw_field}: {td.get(_plan.raw_field)}")
-                    log.debug(f"{_plan.time_field}: {td.get(_plan.time_field)}")
-
             # Find all the surveys data being moved.
             # (Note: we only need to check one td in this group because all the demographics are the same)
             td = group[0]
@@ -117,7 +109,6 @@ class WSCorrection(object):
                     continue
                 ws_code = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"])
                 if ws_code.code_type == "Normal":
-                    log.debug(f"Detected redirect from {plan.raw_field} -> {ws_code_to_raw_field_map.get(ws_code.code_id, ws_code.code_id)} for message {td[plan.raw_field]}")
                     survey_moves[plan.raw_field] = ws_code_to_raw_field_map[ws_code.code_id]
 
             # Find all the RQA data being moved.
@@ -128,7 +119,6 @@ class WSCorrection(object):
                         continue
                     ws_code = CodeSchemes.WS_CORRECT_DATASET.get_code_with_id(td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"])
                     if ws_code.code_type == "Normal":
-                        log.debug(f"Detected redirect from ({i}, {plan.raw_field}) -> {ws_code_to_raw_field_map.get(ws_code.code_id, ws_code.code_id)} for message {td[plan.raw_field]}")
                         rqa_moves[(i, plan.raw_field)] = ws_code_to_raw_field_map[ws_code.code_id]
 
             # Build a dictionary of the survey fields that haven't been moved, and cleared fields for those which have.
@@ -218,10 +208,5 @@ class WSCorrection(object):
                 corrected_td = td.copy()
                 corrected_td.append_data(rqa_dict, Metadata(user, Metadata.get_call_location(), time.time()))
                 corrected_data.append(corrected_td)
-
-                log.debug(f"----------Created TracedData--------------")
-                for _plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
-                    log.debug(f"{_plan.raw_field}: {corrected_td.get(_plan.raw_field)}")
-                    log.debug(f"{_plan.time_field}: {corrected_td.get(_plan.time_field)}")
 
         return corrected_data
