@@ -22,18 +22,18 @@ class ApplyManualCodes(object):
                             CodeSchemes.WS_CORRECT_DATASET.get_code_with_control_code(Codes.CODING_ERROR).code_id:
                         for cc in plan.coding_configurations:
                             if cc.coding_mode == CodingModes.SINGLE:
-                                coding_error_dict[plan.binary_coded_field] = \
+                                coding_error_dict[cc.coded_field] = \
                                     CleaningUtils.make_label_from_cleaner_code(
-                                        plan.binary_code_scheme,
-                                        plan.binary_code_scheme.get_code_with_control_code(Codes.CODING_ERROR),
+                                        cc.code_scheme,
+                                        cc.code_scheme.get_code_with_control_code(Codes.CODING_ERROR),
                                         Metadata.get_call_location()
                                     ).to_dict()
                             else:
                                 assert cc.coding_mode == CodingModes.MULTIPLE
-                                coding_error_dict[plan.coded_field] = [
+                                coding_error_dict[cc.coded_field] = [
                                     CleaningUtils.make_label_from_cleaner_code(
-                                        plan.code_scheme,
-                                        plan.code_scheme.get_code_with_control_code(Codes.CODING_ERROR),
+                                        cc.code_scheme,
+                                        cc.code_scheme.get_code_with_control_code(Codes.CODING_ERROR),
                                         Metadata.get_call_location()
                                     ).to_dict()
                                 ]
