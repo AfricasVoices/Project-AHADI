@@ -35,7 +35,7 @@ class CodingConfiguration(object):
 
 # TODO: Rename CodingPlan to something like DatasetConfiguration?
 class CodingPlan(object):
-    def __init__(self, raw_field, coda_filename, coding_configurations, raw_field_folding_mode, ws_code,
+    def __init__(self, raw_field, coda_filename, coding_configurations, raw_field_folding_mode, ws_code=None,
                  time_field=None, run_id_field=None, icr_filename=None, id_field=None, code_imputation_function=None):
         self.raw_field = raw_field
         self.time_field = time_field
