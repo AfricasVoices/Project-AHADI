@@ -71,5 +71,6 @@
     "MessagesTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_messages.jsonl",
     "IndividualsTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_individuals.jsonl"
   },
-  "FlowDefinitionsUploadURLPrefix": "gs://avf-flow-definitions-test/AHADI-test-"
+  "FlowDefinitionsUploadURLPrefix": "gs://avf-flow-definitions-test/AHADI-test-",
+  "MemoryProfileUploadURLPrefix": "gs://avf-pipeline-logs-performance-nearline/2019/AHADI/memory-"
 }
