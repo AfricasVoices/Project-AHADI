@@ -6,7 +6,7 @@ IMAGE_NAME=ahadi
 
 # Check that the correct number of arguments were provided.
 if [[ $# -ne 5 ]]; then
-    echo "Usage: ./docker-run-upload-outputs.sh
+    echo "Usage: ./docker-run-upload-logs.sh
     <user> <google-cloud-credentials-file-path> <pipeline-configuration-file-path> <run-id> <memory-profile-path>"
     exit
 fi
@@ -22,7 +22,7 @@ INPUT_MEMORY_PROFILE=$5
 docker build -t "$IMAGE_NAME" .
 
 # Create a container from the image that was just built.
-CMD="pipenv run python -u upload_outputs.py \
+CMD="pipenv run python -u upload_logs.py \
     \"$USER\" /credentials/google-cloud-credentials.json /data/pipeline_configuration.json \
     \"$RUN_ID\" /data/memory.profile
 "

@@ -34,5 +34,5 @@ RUN_ID=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 ./5_backup_data_root.sh "$DATA_ROOT" "$DATA_BACKUPS_DIR" "$RUN_ID"
 
-./6_upload_outputs.sh "$USER" "$AVF_BUCKET_CREDENTIALS_PATH" "$PIPELINE_CONFIGURATION" "$RUN_ID" \
+./6_upload_logs.sh "$USER" "$AVF_BUCKET_CREDENTIALS_PATH" "$PIPELINE_CONFIGURATION" "$RUN_ID" \
     "$PERFORMANCE_LOGS_DIR/memory-$RUN_ID.profile"
