@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+
 from core_data_modules.logging import Logger
 from core_data_modules.traced_data.io import TracedDataJsonIO
 from core_data_modules.util import IOUtils
@@ -8,7 +9,7 @@ from storage.google_cloud import google_cloud_utils
 from storage.google_drive import drive_client_wrapper
 
 from src import AutoCodeShowMessages, AutoCodeSurveys, CombineRawDatasets, \
-    ProductionFile, TranslateRapidProKeys, AnalysisFile
+    ProductionFile, TranslateRapidProKeys, AnalysisFile, WSCorrection
 from src.apply_manual_codes import ApplyManualCodes
 from src.lib import PipelineConfiguration
 
@@ -112,6 +113,9 @@ if __name__ == "__main__":
 
     log.info("Translating Rapid Pro Keys...")
     data = TranslateRapidProKeys.translate_rapid_pro_keys(user, data, pipeline_configuration, prev_coded_dir_path)
+
+    log.info("Redirecting WS messages...")
+    data = WSCorrection.move_wrong_scheme_messages(user, data, prev_coded_dir_path)
 
     log.info("Auto Coding Messages...")
     data = AutoCodeShowMessages.auto_code_show_messages(user, data, pipeline_configuration, icr_output_dir, coded_dir_path)

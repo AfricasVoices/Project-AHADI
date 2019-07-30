@@ -26,4 +26,4 @@ class CodeSchemes(object):
     TRUST = _open_scheme("trust.json")
     POSITIVE_CHANGES = _open_scheme("positive_changes.json")
 
-    # WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")
+    WS_CORRECT_DATASET = _open_scheme("ws_correct_dataset.json")

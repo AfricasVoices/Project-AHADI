@@ -7,10 +7,40 @@ from core_data_modules.traced_data import Metadata
 from core_data_modules.traced_data.io import TracedDataCodaV2IO
 
 from src.lib import PipelineConfiguration
+from src.lib.code_schemes import CodeSchemes
 from src.lib.pipeline_configuration import CodingModes
 
 
 class ApplyManualCodes(object):
+    @staticmethod
+    def _impute_coding_error_codes(user, data):
+        for td in data:
+            coding_error_dict = dict()
+            for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
+                if f"{plan.raw_field}_WS_correct_dataset" in td:
+                    if td[f"{plan.raw_field}_WS_correct_dataset"]["CodeID"] == \
+                            CodeSchemes.WS_CORRECT_DATASET.get_code_with_control_code(Codes.CODING_ERROR).code_id:
+                        for cc in plan.coding_configurations:
+                            if cc.coding_mode == CodingModes.SINGLE:
+                                coding_error_dict[cc.coded_field] = \
+                                    CleaningUtils.make_label_from_cleaner_code(
+                                        cc.code_scheme,
+                                        cc.code_scheme.get_code_with_control_code(Codes.CODING_ERROR),
+                                        Metadata.get_call_location()
+                                    ).to_dict()
+                            else:
+                                assert cc.coding_mode == CodingModes.MULTIPLE
+                                coding_error_dict[cc.coded_field] = [
+                                    CleaningUtils.make_label_from_cleaner_code(
+                                        cc.code_scheme,
+                                        cc.code_scheme.get_code_with_control_code(Codes.CODING_ERROR),
+                                        Metadata.get_call_location()
+                                    ).to_dict()
+                                ]
+
+            td.append_data(coding_error_dict,
+                           Metadata(user, Metadata.get_call_location(), time.time()))
+
     @classmethod
     def apply_manual_codes(cls, user, data, coda_input_dir):
         # Merge manually coded data into the cleaned dataset
@@ -72,5 +102,7 @@ class ApplyManualCodes(object):
         for plan in PipelineConfiguration.RQA_CODING_PLANS + PipelineConfiguration.SURVEY_CODING_PLANS:
             if plan.code_imputation_function is not None:
                 plan.code_imputation_function(user, data, plan.coding_configurations)
+
+        cls._impute_coding_error_codes(user, data)
 
         return data
