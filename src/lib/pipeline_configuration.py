@@ -35,8 +35,8 @@ class CodingConfiguration(object):
 
 # TODO: Rename CodingPlan to something like DatasetConfiguration?
 class CodingPlan(object):
-    def __init__(self, raw_field, coda_filename, coding_configurations, raw_field_folding_mode, time_field=None,
-                 run_id_field=None, icr_filename=None, id_field=None, code_imputation_function=None):
+    def __init__(self, raw_field, coda_filename, coding_configurations, raw_field_folding_mode, ws_code=None,
+                 time_field=None, run_id_field=None, icr_filename=None, id_field=None, code_imputation_function=None):
         self.raw_field = raw_field
         self.time_field = time_field
         self.run_id_field = run_id_field
@@ -44,6 +44,7 @@ class CodingPlan(object):
         self.icr_filename = icr_filename
         self.coding_configurations = coding_configurations
         self.code_imputation_function = code_imputation_function
+        self.ws_code = ws_code
         self.raw_field_folding_mode = raw_field_folding_mode
 
         if id_field is None:
@@ -67,6 +68,7 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.MATRIX
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("s01e01"),
                    raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e02_raw",
@@ -83,6 +85,7 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.MATRIX
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("s01e02"),
                    raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e03_raw",
@@ -99,6 +102,7 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.MATRIX
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("s01e03"),
                    raw_field_folding_mode=FoldingModes.CONCATENATE),
 
         CodingPlan(raw_field="rqa_s01e04_raw",
@@ -115,6 +119,7 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.MATRIX
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("s01e04"),
                    raw_field_folding_mode=FoldingModes.CONCATENATE),
     ]
 
@@ -152,6 +157,7 @@ class PipelineConfiguration(object):
                        )
                    ],
                    code_imputation_function=code_imputation_functions.impute_kenya_location_codes,
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("location"),
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="gender_raw",
@@ -167,6 +173,7 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.ASSERT_EQUAL
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("gender"),
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="age_raw",
@@ -182,6 +189,7 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.ASSERT_EQUAL
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("age"),
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
 
         CodingPlan(raw_field="livelihood_raw",
@@ -196,13 +204,70 @@ class PipelineConfiguration(object):
                            folding_mode=FoldingModes.ASSERT_EQUAL
                        )
                    ],
+                   ws_code=CodeSchemes.WS_CORRECT_DATASET.get_code_with_match_value("livelihood"),
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
+
+        CodingPlan(raw_field="understanding_raw",
+                   time_field="understanding_time",
+                   coda_filename="understanding.json",
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.UNDERSTANDING,
+                           coded_field="understanding_coded",
+                           analysis_file_key="understanding",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
+
+        CodingPlan(raw_field="inclusion_raw",
+                   time_field="inclusion_time",
+                   coda_filename="inclusion.json",
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.INCLUSION,
+                           coded_field="inclusion_coded",
+                           analysis_file_key="inclusion",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
+
+        CodingPlan(raw_field="trust_raw",
+                   time_field="trust_time",
+                   coda_filename="trust.json",
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.TRUST,
+                           coded_field="trust_coded",
+                           analysis_file_key="trust",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
+                   raw_field_folding_mode=FoldingModes.ASSERT_EQUAL),
+
+        CodingPlan(raw_field="positive_changes_raw",
+                   time_field="positive_changes_time",
+                   coda_filename="positive_changes.json",
+                   coding_configurations=[
+                       CodingConfiguration(
+                           coding_mode=CodingModes.SINGLE,
+                           code_scheme=CodeSchemes.POSITIVE_CHANGES,
+                           coded_field="positive_changes_coded",
+                           analysis_file_key="positive_changes",
+                           folding_mode=FoldingModes.ASSERT_EQUAL
+                       )
+                   ],
                    raw_field_folding_mode=FoldingModes.ASSERT_EQUAL)
     ]
 
     def __init__(self, rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,
                  rapid_pro_test_contact_uuids, phone_number_uuid_table, recovery_csv_urls, rapid_pro_key_remappings,
                  project_start_date, project_end_date, filter_test_messages,
-                 flow_definitions_upload_url_prefix, drive_upload=None):
+                 flow_definitions_upload_url_prefix, memory_profile_upload_url_prefix, drive_upload=None):
         """
         :param rapid_pro_domain: URL of the Rapid Pro server to download data from.
         :type rapid_pro_domain: str
@@ -229,10 +294,14 @@ class PipelineConfiguration(object):
         :type project_end_date: datetime.datetime
         :param filter_test_messages: Whether to filter out messages sent from the rapid_pro_test_contact_uuids
         :type filter_test_messages: bool
-        :param flow_definitions_upload_url_prefix: The prefix of the GS URL to uploads serialised flow definitions to.
+        :param flow_definitions_upload_url_prefix: The prefix of the GS URL to upload serialised flow definitions to.
                                                    This prefix will be appended with the current datetime and the
                                                    ".json" file extension.
         :type flow_definitions_upload_url_prefix: str
+        :param memory_profile_upload_url_prefix: The prefix of the GS URL to upload the memory profile log to.
+                                                 This prefix will be appended by the id of the pipeline run (provided
+                                                 as a command line argument), and the ".profile" file extension.
+        :type memory_profile_upload_url_prefix: str
         :param recovery_csv_urls: GS URLs to CSVs in Shaqadoon's recovery format, or None.
         :type recovery_csv_urls: list of str | None
         :param drive_upload: Configuration for uploading to Google Drive, or None.
@@ -252,6 +321,7 @@ class PipelineConfiguration(object):
         self.filter_test_messages = filter_test_messages
         self.drive_upload = drive_upload
         self.flow_definitions_upload_url_prefix = flow_definitions_upload_url_prefix
+        self.memory_profile_upload_url_prefix = memory_profile_upload_url_prefix
 
         self.validate()
 
@@ -280,11 +350,12 @@ class PipelineConfiguration(object):
             drive_upload_paths = DriveUpload.from_configuration_dict(configuration_dict["DriveUpload"])
 
         flow_definitions_upload_url_prefix = configuration_dict["FlowDefinitionsUploadURLPrefix"]
+        memory_profile_upload_url_prefix = configuration_dict["MemoryProfileUploadURLPrefix"]
 
         return cls(rapid_pro_domain, rapid_pro_token_file_url, activation_flow_names, survey_flow_names,
                    rapid_pro_test_contact_uuids, phone_number_uuid_table, recovery_csv_urls, rapid_pro_key_remappings,
                    project_start_date, project_end_date, filter_test_messages,
-                   flow_definitions_upload_url_prefix, drive_upload_paths)
+                   flow_definitions_upload_url_prefix, memory_profile_upload_url_prefix, drive_upload_paths)
 
     @classmethod
     def from_configuration_file(cls, f):
@@ -331,6 +402,7 @@ class PipelineConfiguration(object):
             self.drive_upload.validate()
 
         validators.validate_string(self.flow_definitions_upload_url_prefix, "flow_definitions_upload_url_prefix")
+        validators.validate_string(self.memory_profile_upload_url_prefix, "memory_profile_upload_url_prefix")
 
 
 class PhoneNumberUuidTable(object):

@@ -8,7 +8,8 @@
     "ahadi_s01_e04_activation"
   ],
   "SurveyFlowNames": [
-    "ahadi_demog"
+    "ahadi_demog",
+    "ahadi_s01_evaluation"
   ],
   "RapidProTestContactUUIDs": [
     "2afc675d-97d5-428d-a563-258e7a5515f3",
@@ -48,7 +49,16 @@
     {"RapidProKey": "Age (Text) - ahadi_demog", "PipelineKey": "age_raw"},
     {"RapidProKey": "Age (Time) - ahadi_demog", "PipelineKey": "age_time"},
     {"RapidProKey": "Livelihood (Text) - ahadi_demog", "PipelineKey": "livelihood_raw"},
-    {"RapidProKey": "Livelihood (Time) - ahadi_demog", "PipelineKey": "livelihood_time"}
+    {"RapidProKey": "Livelihood (Time) - ahadi_demog", "PipelineKey": "livelihood_time"},
+
+    {"RapidProKey": "Understanding (Text) - ahadi_s01_evaluation", "PipelineKey": "understanding_raw"},
+    {"RapidProKey": "Understanding (Time) - ahadi_s01_evaluation", "PipelineKey": "understanding_time"},
+    {"RapidProKey": "Inclusion (Text) - ahadi_s01_evaluation", "PipelineKey": "inclusion_raw"},
+    {"RapidProKey": "Inclusion (Time) - ahadi_s01_evaluation", "PipelineKey": "inclusion_time"},
+    {"RapidProKey": "Trust (Text) - ahadi_s01_evaluation", "PipelineKey": "trust_raw"},
+    {"RapidProKey": "Trust (Time) - ahadi_s01_evaluation", "PipelineKey": "trust_time"},
+    {"RapidProKey": "Positive_Changes (Text) - ahadi_s01_evaluation", "PipelineKey": "positive_changes_raw"},
+    {"RapidProKey": "Positive_Changes (Time) - ahadi_s01_evaluation", "PipelineKey": "positive_changes_time"}
   ],
   "ProjectStartDate": "2019-06-17T00:00:00+03:00",
   "ProjectEndDate": "2019-07-14T24:00:00+03:00",
@@ -58,8 +68,9 @@
     "ProductionUploadPath": "ahadi_analysis_outputs/ahadi_s01_production.csv",
     "MessagesUploadPath": "ahadi_analysis_outputs/ahadi_s01_messages.csv",
     "IndividualsUploadPath": "ahadi_analysis_outputs/ahadi_s01_individuals.csv",
-    "MessagesTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_messages.json",
-    "IndividualsTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_individuals.json"
+    "MessagesTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_messages.jsonl",
+    "IndividualsTracedDataUploadPath": "ahadi_analysis_outputs/ahadi_s01_traced_data_individuals.jsonl"
   },
-  "FlowDefinitionsUploadURLPrefix": "gs://avf-flow-definitions-test/AHADI-test-"
+  "FlowDefinitionsUploadURLPrefix": "gs://avf-flow-definitions-test/AHADI-test-",
+  "MemoryProfileUploadURLPrefix": "gs://avf-pipeline-logs-performance-nearline/2019/AHADI/memory-"
 }
